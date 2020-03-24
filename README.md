@@ -24,7 +24,7 @@ The <strong>Google Dinosaur</strong> is a <strong>Browser Extension</strong>
 
 Sunny, age 25, is a master student in San Diego, a city in the US state of California on the coast of The Pacific Ocean. She has responsibility for some research related to building a web server, host web application and tests the communication between the platform and server. She had a Bachelor of Science degree in Computer Science major in 2017 and then retrained as a researcher to gain a master's degree at university after 3 years working as a web developer in SAP company. 
 
-As her routine studying and working life, she always works with computers, laptops and phones. Therefore, Google Dinosaur game is one of the options offering a quite range of difficulty for her having something to be accessible for her to relax when she is disconnected from the Internet. Sunny would love a little dinosaur because this game helps her not only interact with her eyes and her hands together but also kill time during the Internet connection is not working well.
+As her routine studying and working life, she always works with computers, laptops and phones. Therefore,Google Dinosaur Game is one of the options that offers her a various levels of difficulty and gives her access to entertainment without Internet connection. Sunny would love a little dinosaur because this game helps her not only interact with her eyes and her hands together but also kill time during the Internet connection is not working well.
 
 <strong>Ziwei Gao</strong>
 
