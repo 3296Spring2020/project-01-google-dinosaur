@@ -30,7 +30,7 @@ As her routine studying and working life, she always works with computers, lapto
 
 <strong>Ziwei Gao</strong>
 
-Tom, a high school student, has to use his Chromebook in every school day. He has a varies of hobbies and interests, but he still cannot beat the bored when he has no internet connection, but he has to finish the schoolwork so he cannot simply go outside and hang out with his friends. The only choice is waiting for the connection becomes good.  At this time, he has opened the webpage and saw ‘no internet connects’ but a small dinosaur game appears. Then, he knows that he will press the space key on the keyboard.Tom, a high school student, has to use his Chromebook in every school day. He has a varies of hobbies and interests, but he still cannot beat the bored when he has no internet connection, but he has to finish the schoolwork so he cannot simply go outside and hang out with his friends. The only choice is waiting for the connection becomes good.  At this time, he has opened the webpage and saw ‘no internet connects’ but a small dinosaur game appears. Then, he knows that he will press the space key on the keyboard.
+Tom, a high school student, has to use his Chromebook in every school day. He has a varies of hobbies and interests, but he still cannot beat the bored when he has no internet connection, but he has to finish the schoolwork so he cannot simply go outside and hang out with his friends. The only choice is waiting for the connection becomes good.  At this time, he has opened the webpage and saw ‘no internet connects’ but a small dinosaur game appears. Then, he knows that he will press the space key on the keyboard.
 
 <strong>Zidong Wang</strong>
 
