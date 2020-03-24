@@ -30,6 +30,7 @@ As her routine studying and working life, she always works with computers, lapto
 
 <strong>Zidong Wang</strong>
 
+Jay is a student in class 2, grade 3 in federal primary school. His hobby is piano and basketball. He really wants to be a singer when grows up. But his father doesn’t think so. He wants Jay to be a programmer. He thinks that programmer is easier to find a job in the future. However, Jay is not interested in this field. His father may need an enlighten game to spark his interest. I think that the little dinosaur is a best software for them. It is easy and funny. I am sure Jay would like it.
 <strong>Junxiang Wen</strong>
 
 ## Feature List
