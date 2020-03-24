@@ -55,7 +55,7 @@ Since this project was under a smaller time constraint, we decided the best way 
 
 ## Minimal Project.
 
-We can run the program correctly, after that, we adjust some parameter in runner.js. It works for the game.
+We can run the program correctly, after that, we adjust some parameters in runner.js. It works for the game.
 Now, we can make any changes on this project to  achieve our goal
 
 ![Graphs](https://github.com/3296Spring2020/project-01-google-dinosaur/blob/Wang/little.png)
