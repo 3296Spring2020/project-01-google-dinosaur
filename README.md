@@ -31,7 +31,9 @@ As her routine studying and working life, she always works with computers, lapto
 <strong>Zidong Wang</strong>
 
 Jay is a student in class 2, grade 3 in federal primary school. His hobby is piano and basketball. He really wants to be a singer when he grows up. But his father doesn’t think so. He wants Jay to be a programmer becasue he thinks that programmer is easier to find a job in the future. However, Jay is not interested in this field. His father may need an enlighten game to spark Jay's interest. I think that the Google Dinosaur game is a best software for them. It is easy and funny. I am sure Jay would like it.
+
 <strong>Junxiang Wen</strong>
+Ray is a college student who studies software engineering. Usually, he often use his computers for studying. When his computer does not have network connections, he will choose to play GOOGLE DINOSAUR. It's lovely and interesting to jump around in the screen. This game can also make him to relax his mood and reduce the pressure of work and study. Sometimes, he will disconnect the network to play  GOOGLE DINOSAUR.
 
 ## Feature List
 
