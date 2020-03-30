@@ -727,9 +727,10 @@
 
             scoreboard.push({
                 Name: name,
-                Score: value
+                Score: this.distanceMeter.getActualDistance(value)
             });
 
+            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
             localStorage.SCOREBOARD = JSON.stringify(scoreboard);
         },
 
@@ -737,7 +738,7 @@
             var scoreboard = [];
             try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
 
-
+            console.table(scoreboard);
         },
 
         /**
