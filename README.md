@@ -104,3 +104,6 @@ Now, we can make any changes on this project to  achieve our goal
         SPEED_DROP_COEFFICIENT: 3
         
     };
+    
+    ## Week1
+    The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
