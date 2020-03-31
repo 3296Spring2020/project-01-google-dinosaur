@@ -44,7 +44,9 @@ Ray is a college student who studies software engineering. Usually, he often use
 
 - Increase the difficulty level.
 - Play this game while the Internet connection is perfect.
-- Display how many times to play and the highest score for a user to play in one day.
+- Display the player name and the score by ranking.
+- Two player can play together at the same computer.
+- Player can change character model or music based on your favorite.
 
 ## Programming language and development environment
 
@@ -107,9 +109,11 @@ Now, we can make any changes on this project to  achieve our goal
     
 
 ## Week1
-    The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
-    Recast index.html which can choose player for gaming
-    origin index.html rename to gaming.html and selector.js will selector the corresponding JS file(runner.js/twoRunner.js) which combine with gaming.html.
-    Add twoRunner.js for 2 palyers(in process)
-    Add jquery for both html file
+
+- The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
+
+- Recast index.html which can choose player for gaming
+origin index.html rename to gaming.html and selector.js will selector the corresponding JS file(runner.js/twoRunner.js) which combine with gaming.html.
+Add twoRunner.js for 2 palyers(in process)
+Add jquery for both html file.
 
