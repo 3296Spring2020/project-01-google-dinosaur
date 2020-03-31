@@ -730,6 +730,7 @@
             });
 
             scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
+            var scoreboard = scoreboard.slice(0, 10);
             localStorage.SCOREBOARD = JSON.stringify(scoreboard);
         },
 
