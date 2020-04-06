@@ -2106,7 +2106,7 @@
         save: function(score, dist) {
             var scoreboard = this.get();
 
-            var name = prompt("Enter name: ");
+            var name = prompt("Enter your name: ");
             scoreboard.push({
                 Name: name,
                 Score: score,
@@ -2114,7 +2114,7 @@
             });
 
             scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
-            var scoreboard = scoreboard.slice(0, 10);
+            var scoreboard = scoreboard.slice(0, 5);
 
             localStorage.SCOREBOARD = JSON.stringify(scoreboard);
         },
@@ -2134,7 +2134,7 @@
                     "; Score: " + item.Score + "\n";
             }, "");
 
-            alert("TOP 10 SCORES: \n\n" + str);
+            alert("TOP 5 SCORES: \n\n" + str);
         },
 
         log: function() {
