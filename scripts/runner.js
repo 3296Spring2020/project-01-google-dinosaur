@@ -732,45 +732,6 @@
                 this.update();
             }
         },
-        /*
-        LOCAL STORAGE Scoreboard
-        */
-
-        initScoreboard: function() {
-            var doSave = confirm("Do you want to save your score?");
-            if (doSave) this.saveScoreboard();
-        },
-
-        saveScoreboard: function() {
-            var scoreboard = this.retrieveScoreboard();
-
-            var name = prompt("Enter your name: ");
-            var value = Math.ceil(this.distanceRan);
-
-            scoreboard.push({
-                Name: name,
-                Score: this.distanceMeter.getActualDistance(value)
-            });
-
-            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
-            var scoreboard = scoreboard.slice(0, 10);
-            localStorage.SCOREBOARD = JSON.stringify(scoreboard);
-        },
-
-        showScoreboard: function() {
-            var scoreboard = this.retrieveScoreboard();
-        },
-
-        logScoreboard: function() {
-            console.table(this.retrieveScoreboard());
-        },
-
-        retrieveScoreboard: function() {
-            var scoreboard = [];
-            try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
-
-            return scoreboard;
-        },
 
         /**
          * Pause the game if the tab is not in focus.
@@ -2122,7 +2083,56 @@
                 this.dimensions.WIDTH));
         }
     };
+
+    /***************************************/
+    /*
+    Scoreboard class
+    */
+
+    function Scoreboard() {
+
+    }
+
+
+    Scoreboard.prototype = {
+        init: function(score, dist) {
+            var doSave = confirm("Do you want to save your score?");
+            if (doSave) this.save(score, dist);
+        },
+
+        save: function(score, dist) {
+            var scoreboard = this.get();
+
+            var name = prompt("Enter name: ");
+            scoreboard.push({
+                Name: name,
+                Score: score,
+                Distance: dist
+            });
+
+            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
+            var scoreboard = scoreboard.slice(0, 10);
+
+            localStorage.SCOREBOARD = JSON.stringify(scoreboard);
+        },
+
+        show: function() {
+            var scoreboard = this.get();
+        },
+
+        log: function() {
+            console.table(this.get());
+        },
+
+        get: function() {
+            var scoreboard = [];
+            try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
+
+            return scoreboard;
+        },
+    }
 })();
 
+new Runner('.interstitial-wrapper');
 new Runner('.interstitial-wrapper');
 new Runner('.interstitial-wrapper');
