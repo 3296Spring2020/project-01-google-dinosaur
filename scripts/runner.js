@@ -62,7 +62,6 @@
      * @const
      */
     var FPS = 60;
-
     /** @const */
     var IS_HIDPI = window.devicePixelRatio > 1;
     /** @const */
@@ -450,6 +449,9 @@
                 if (this.tRex.jumping) {
                     this.tRex.updateJump(deltaTime, this.config);
                 }
+                //if (this.tRex.SecondJump) {
+                //    this.tRex.updateJump(deltaTime, this.config);
+                //}
                 this.runningTime += deltaTime;
                 var hasObstacles = this.runningTime > this.config.CLEAR_TIME;
                 // First jump triggers the intro.
@@ -560,19 +562,30 @@
                     this.playSound(this.soundFx.BUTTON_PRESS);
                     this.tRex.startJump();
 
-
                 }
-                if (this.tRex.jumping) {
-                    this.playSound(this.soundFx.BUTTON_PRESS);
-                    this.tRex.startJump();
-
-                }
+               
             }
+            if (!this.crashed && (Runner.keycodes.JUMP[String(e.keyCode)] ||
+    e.type == Runner.events.TOUCHSTART)) {
+                if (this.tRex.endJump) {
+                   
+                   //this.tRex.SecondJump();
+                    this.tRex.startJump();
+                  
+                }
+
+            }
+
+
+
             if (!this.crashed && (Runner.keycodes.LEFT[String(e.keyCode)] ||
-                    e.type == Runner.events.TOUCHSTART)) {
+
+     e.type == Runner.events.TOUCHSTART)) {
+                
                 this.tRex.xPos -= 10;
 
             }
+           
             if (!this.crashed && (Runner.keycodes.RIGHT[String(e.keyCode)] ||
                     e.type == Runner.events.TOUCHSTART)) {
                 this.tRex.xPos += 10;
@@ -1260,8 +1273,9 @@
         this.speedDrop = false;
         this.jumpCount = 0;
         this.jumpspotX = 0;
-
+        this.isSecondJump = true;
         this.init();
+       
     };
     /**
      * T-rex player config.
@@ -1438,23 +1452,41 @@
         /**
          * Initialise a jump.
          */
-        startJump: function() {
+
+        startJump: function () {
+            if (this.jumping) {
+                this.update(0, Trex.status.JUMPING);
+                this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
+                this.jumping = true;
+                this.reachedMinHeight = false;
+                this.speedDrop = false;
+             //   this.isSecondJump = false;
+            }
+
             if (!this.jumping) {
                 this.update(0, Trex.status.JUMPING);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.jumping = true;
-                // this.reachedMinHeight = false;
-                // this.speedDrop = false;
+
+                this.reachedMinHeight = false;
+                this.speedDrop = false;
+
             }
+           
         },
         /**
-         * Initialise a jump.
-         */
-        SecondJump: function() {
-            if (this.jumping) {
+
+        * Initialise a secondjump.
+        */
+        SecondJump: function () {
+            this.playSound(this.soundFx.BUTTON_PRESS);
+            if (this.SecondJump) {
+            
                 this.update(0, Trex.status.SECONDJ);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.SecondJump = true;
+          
+
                 this.reachedMinHeight = false;
                 this.speedDrop = false;
             }
@@ -1464,7 +1496,7 @@
          */
         endJump: function() {
             if (this.reachedMinHeight &&
-                this.jumpVelocity < this.config.DROP_VELOCITY) {
+                 this.jumpVelocity < this.config.DROP_VELOCITY) {
                 this.jumpVelocity = this.config.DROP_VELOCITY;
             }
         },
