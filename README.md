@@ -16,6 +16,8 @@ The <strong>Google Dinosaur</strong> is a <strong>Browser Extension</strong>
 
 <strong>UNLIKE</strong> this extension is able to play while the Internet connection is perfect and will display how many times and the highest score for a day.
 
+Players can <strong>CHANGE</strong> character model or music to to better suit their mood.
+
 <strong>OUR PRODUCT</strong> will provide a new trend and design pattern for users to play more attractive.
 
 ## Personas
@@ -28,16 +30,23 @@ As her routine studying and working life, she always works with computers, lapto
 
 <strong>Ziwei Gao</strong>
 
+Tom, a high school student, has to use his Chromebook in every school day. He has a varies of hobbies and interests, but he still cannot beat the bored when he has no internet connection, but he has to finish the schoolwork so he cannot simply go outside and hang out with his friends. The only choice is waiting for the connection becomes good.  At this time, he has opened the webpage and saw ‘no internet connects’ but a small dinosaur game appears. Then, he knows that he will press the space key on the keyboard.
+
 <strong>Zidong Wang</strong>
 
 Jay is a student in class 2, grade 3 in federal primary school. His hobby is piano and basketball. He really wants to be a singer when he grows up. But his father doesn’t think so. He wants Jay to be a programmer becasue he thinks that programmer is easier to find a job in the future. However, Jay is not interested in this field. His father may need an enlighten game to spark Jay's interest. I think that the Google Dinosaur game is a best software for them. It is easy and funny. I am sure Jay would like it.
+
 <strong>Junxiang Wen</strong>
+
+Ray is a college student who studies software engineering. Usually, he often use his computers for studying. When his computer does not have network connections, he will choose to play GOOGLE DINOSAUR. It's lovely and interesting to jump around in the screen. This game can also make him to relax his mood and reduce the pressure of work and study. Sometimes, he will disconnect the network to play  GOOGLE DINOSAUR.
 
 ## Feature List
 
 - Increase the difficulty level.
 - Play this game while the Internet connection is perfect.
-- Display how many times to play and the highest score for a user to play in one day.
+- Display the player name and the score by ranking.
+- Two player can play together at the same computer.
+- Player can change character model or music based on your favorite.
 
 ## Programming language and development environment
 
@@ -97,3 +106,14 @@ Now, we can make any changes on this project to  achieve our goal
         SPEED_DROP_COEFFICIENT: 3
         
     };
+    
+
+## Week1
+
+- The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
+
+- Recast index.html which can choose player for gaming
+origin index.html rename to gaming.html and selector.js will selector the corresponding JS file(runner.js/twoRunner.js) which combine with gaming.html.
+Add twoRunner.js for 2 palyers(in process)
+Add jquery for both html file.
+
