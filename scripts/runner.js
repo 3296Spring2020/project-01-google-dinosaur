@@ -26,6 +26,7 @@
         this.tRex = null;
         this.distanceMeter = null;
         this.distanceRan = 0;
+        this.scoreboard = null;
 
         this.highestScore = 0;
         this.time = 0;
@@ -319,6 +320,12 @@
             // Distance meter
             this.distanceMeter = new DistanceMeter(this.canvas,
                 this.images.TEXT_SPRITE, this.dimensions.WIDTH);
+
+            // Scoreboard
+            this.scoreboard = new Scoreboard();
+            // Initial high score
+            this.setHighScore();
+
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.images.TREX);
 
@@ -664,15 +671,31 @@
             } else {
                 this.gameOverPanel.draw();
             }
+
             // Update the high score.
-            if (this.distanceRan > this.highestScore) {
-                this.highestScore = Math.ceil(this.distanceRan);
-                this.distanceMeter.setHighScore(this.highestScore);
-            }
+            //        if (this.distanceRan > this.highestScore) {
+            //this.highestScore = Math.ceil(this.distanceRan);
+            //this.distanceMeter.setHighScore(this.highestScore);
+            //}
+
             // Reset the time clock.
             this.time = performance.now();
             //Initialize scoreboard
-            this.initScoreboard();
+            var distance = Math.ceil(this.distanceRan)
+            var score = this.distanceMeter.getActualDistance(distance);
+            this.scoreboard.init(score, distance);
+
+            //set high score
+            this.setHighScore();
+
+        },
+
+        setHighScore: function() {
+            var scores = this.scoreboard.get();
+            if (scores.length > 0) {
+                var dist = scores[0].Distance;
+                this.distanceMeter.setHighScore(dist);
+            }
         },
 
         stop: function() {
