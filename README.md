@@ -108,4 +108,18 @@ Now, we can make any changes on this project to  achieve our goal
         
     };
     
+ ## Week1
+
+- The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
+
+- Recast index.html which can choose player for gaming
+origin index.html rename to gaming.html and selector.js will selector the corresponding JS file(runner.js/twoRunner.js) which combine with gaming.html.
+Add twoRunner.js for 2 palyers(in process)
+Add jquery for both html file.
+
+## Week2
+
+- Now the Trex can jump twice or more
+- Display the name and the top 5 scores at scoreboard management when the game is end.
+- Two players can play together in the same computer
 
