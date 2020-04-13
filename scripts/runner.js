@@ -1034,7 +1034,7 @@
                     }
                 }
             }
-            else if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
+            if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
 
                 //   this.distanceRan += 100;
               
@@ -1222,8 +1222,15 @@
         this.image = obstacleImg;
         this.typeConfig = type;
         this.gapCoefficient = gapCoefficient;
-         this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
-        //this.size = 3;
+        var jsonData = JSON.stringify(type.type);
+     //   var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+        if (jsonData.substring(1,13) == "CACTUS_SMALL") {
+        //    var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+            this.size = 1;
+        }
+        else {
+            this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
+        }
         this.dimensions = dimensions;
         this.remove = false;
         this.xPos = 0;
@@ -2460,7 +2467,15 @@
             var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
             var obstacleType = Obstacle.types[obstacleTypeIndex];
             var obstacleImg = this.obstacleImgs[obstacleType.type];
-            this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
+         //   if (obstacleType = "CACTUS_SMALL") {
+                this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
+            //}
+            //else if (obstacleType = "CACTUS_LARGE") {
+            //    this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
+            //}
+
+
+
             if (obstacleType = "CACTUS_SMALL")
             {
             //    this.addCloud();
@@ -2586,6 +2601,4 @@
 
 new Runner('.interstitial-wrapper');
 new Runner('.interstitial-wrapper');
-
 new Runner('.interstitial-wrapper');
-
