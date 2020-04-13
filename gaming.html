@@ -13,21 +13,46 @@
         </style>
 		<script src="scripts/selector.js"></script>
 		<script src="scripts/jquery.js" type="application/javascript"></script>
+		<link rel="stylesheet" href="css/adminlte.min.css"  type="text/css">
     </head>
     <body>
         <div id="messageBox" class="sendmessage">
-           <div id="main-content">
-			<h1>T-Rex Runner Game</h1>
-			<p>Press Space to start the game and jump your Dino, press F to fly the Dino.</p>
-		</div>	      
+            <div style="text-align: center; font-size: 30px;">Press Space to start</div>	      
             <div class="niokbutton" onclick="okbuttonsend()"></div>	       
-        </div>	    
+        </div>	  
+		
+		<div class="btn-group btn-group-toggle"  id="actor1" data-toggle="buttons">
+			<div id = "player11">   <strong>Player 1 Actor:  </strong> .</div>
+            <label class="btn bg-olive active">
+                <input type="radio" name="options" id="option11" autocomplete="off" checked> Dinosaur
+			</label>
+            <label class="btn bg-olive">
+                <input type="radio" name="options" id="option12" autocomplete="off" > Girl
+            </label>
+            <label class="btn bg-olive">
+                <input type="radio" name="options" id="option13" autocomplete="off"> Deer
+            </label>
+		</div>
+		<div class="btn-group btn-group-toggle" id="actor2"  data-toggle="buttons">
+			<div>  .     <strong>  Player 2 Actor:  </strong> .</div>
+            <label class="btn bg-olive active">
+                <input type="radio" name="options" id="option21" autocomplete="off" checked> Dinosaur
+			</label>
+            <label class="btn bg-olive">
+                <input type="radio" name="options" id="option22" autocomplete="off" > Girl
+            </label>
+            <label class="btn bg-olive">
+                <input type="radio" name="options" id="option23" autocomplete="off"> Deer
+            </label>
+        </div>
+		
         <div id="main-frame-error" class="interstitial-wrapper" jstcache="0">
         <img class="icon icon-offline" jseval="updateIconClass(this.classList, iconClass)" jstcache="1" style="visibility: hidden;">
             <div class="runner-container" style="width: 600px; height: 150px;">
                 <canvas class="runner-canvas" width="600" height="150"></canvas>
             </div>
         </div>
+		
         <div id="offline-resources" jstcache="0">
             <div id="offline-resources-1x" jstcache="0">
                 <img id="1x-obstacle-large" src="img/1x-obstacle-large.png" jstcache="0">
@@ -35,6 +60,8 @@
                 <img id="1x-cloud" src="img/1x-cloud.png" jstcache="0">
                 <img id="1x-text" src="img/1x-text.png" jstcache="0">
                 <img id="1x-horizon" src="img/1x-horizon.png" jstcache="0">
+				<img id="1x-girl" src="img/1x-girl.png" jstcache="0">
+				<img id="1x-deer" src="img/1x-deer.png" jstcache="0">
                 <img id="1x-trex" src="img/1x-trex.png" jstcache="0">
                 <img id="1x-restart" src="img/1x-restart.png" jstcache="0">
             </div>
@@ -43,6 +70,8 @@
                 <img id="2x-obstacle-small" src="img/2x-obstacle-small.png" jstcache="0">
                 <img id="2x-cloud" src="img/2x-cloud.png" jstcache="0">
                 <img id="2x-text" src="img/2x-text.png" jstcache="0">
+				<img id="2x-girl" src="img/2x-girl.png" jstcache="0">
+				<img id="2x-deer" src="img/2x-deer.png" jstcache="0">
                 <img id="2x-horizon" src="img/2x-horizon.png" jstcache="0">
                 <img id="2x-trex" src="img/2x-trex.png" jstcache="0">
                 <img id="2x-restart" src="img/2x-restart.png" jstcache="0">

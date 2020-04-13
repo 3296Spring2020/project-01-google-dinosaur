@@ -254,8 +254,49 @@
             var numImages = imageSources.length;
             for (var i = numImages - 1; i >= 0; i--) {
                 var imgSource = imageSources[i];
-                this.images[imgSource.name] = document.getElementById(imgSource.id);
-            }
+				if(i==numImages - 1){
+					var player2Act = localStorage["player2Act"];
+					console.log(player2Act)
+					if(player2Act=='girl'){
+						console.log(imgSource.id)			
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-girl';
+							$("#option21").parent().attr('class','btn bg-olive ');
+							$("#option22").parent().attr('class','btn bg-olive active');
+							$("#option23").parent().attr('class','btn bg-olive');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+							imgSource.id = '1x-girl';
+							$("#option21").parent().attr('class','btn bg-olive ');
+							$("#option22").parent().attr('class','btn bg-olive active');
+							$("#option23").parent().attr('class','btn bg-olive');
+						}
+					} else if(player2Act=='deer'){
+						console.log(imgSource.id)			
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-deer';
+							$("#option21").parent().attr('class','btn bg-olive ');
+							$("#option22").parent().attr('class','btn bg-olive ');
+							$("#option23").parent().attr('class','btn bg-olive active');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+							imgSource.id = '1x-deer';
+							$("#option21").parent().attr('class','btn bg-olive ');
+							$("#option22").parent().attr('class','btn bg-olive ');
+							$("#option23").parent().attr('class','btn bg-olive active');
+						}
+					}else{
+						$("#option21").parent().attr('class','btn bg-olive active');
+						$("#option22").parent().attr('class','btn bg-olive ');
+						$("#option23").parent().attr('class','btn bg-olive');
+						
+					}
+					
+					
+				} 
+				this.images[imgSource.name] = document.getElementById(imgSource.id);
+			
+			}
             this.init();
         },
         /**
@@ -2174,3 +2215,64 @@
 })();
 
 new Runner('.interstitial-wrapper');
+
+$(function (){
+	$("#option21").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["player2Act"]="trex";
+		}
+		location.reload() 
+			 
+	});
+	$("#option22").click(function(){
+		console.log(111);
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			
+			storage["player2Act"]="girl";
+		}
+		location.reload() 
+			 
+	});
+	$("#option23").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["player2Act"]="deer";
+		}
+		location.reload() 
+	});
+	
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
