@@ -86,11 +86,11 @@
         INITIAL_JUMP_VELOCITY: 12,
         MAX_CLOUDS: 6,
         MAX_OBSTACLE_LENGTH: 3,
-        MAX_SPEED: 12,
+        MAX_SPEED: 15,
         MIN_JUMP_HEIGHT: 35,
         MOBILE_SPEED_COEFFICIENT: 1.2,
         RESOURCE_TEMPLATE_ID: 'audio-resources',
-        SPEED: 6,
+        SPEED: 10,
         SPEED_DROP_COEFFICIENT: 3
     };
     /**
@@ -570,15 +570,15 @@
                     this.tRex.startJump();
 
                 }
-               
+
             }
             if (!this.crashed && (Runner.keycodes.JUMP[String(e.keyCode)] ||
-    e.type == Runner.events.TOUCHSTART)) {
+                    e.type == Runner.events.TOUCHSTART)) {
                 if (this.tRex.endJump) {
-                   
-                   //this.tRex.SecondJump();
+
+                    //this.tRex.SecondJump();
                     this.tRex.startJump();
-                  
+
                 }
 
             }
@@ -587,12 +587,12 @@
 
             if (!this.crashed && (Runner.keycodes.LEFT[String(e.keyCode)] ||
 
-     e.type == Runner.events.TOUCHSTART)) {
-                
+                    e.type == Runner.events.TOUCHSTART)) {
+
                 this.tRex.xPos -= 10;
 
             }
-           
+
             if (!this.crashed && (Runner.keycodes.RIGHT[String(e.keyCode)] ||
                     e.type == Runner.events.TOUCHSTART)) {
                 this.tRex.xPos += 10;
@@ -1262,7 +1262,7 @@
         this.jumpspotX = 0;
         this.isSecondJump = true;
         this.init();
-       
+
     };
     /**
      * T-rex player config.
@@ -1440,14 +1440,14 @@
          * Initialise a jump.
          */
 
-        startJump: function () {
+        startJump: function() {
             if (this.jumping) {
                 this.update(0, Trex.status.JUMPING);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.jumping = true;
                 this.reachedMinHeight = false;
                 this.speedDrop = false;
-             //   this.isSecondJump = false;
+                //   this.isSecondJump = false;
             }
 
             if (!this.jumping) {
@@ -1459,20 +1459,20 @@
                 this.speedDrop = false;
 
             }
-           
+
         },
         /**
 
         * Initialise a secondjump.
         */
-        SecondJump: function () {
+        SecondJump: function() {
             this.playSound(this.soundFx.BUTTON_PRESS);
             if (this.SecondJump) {
-            
+
                 this.update(0, Trex.status.SECONDJ);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.SecondJump = true;
-          
+
 
                 this.reachedMinHeight = false;
                 this.speedDrop = false;
@@ -1483,7 +1483,7 @@
          */
         endJump: function() {
             if (this.reachedMinHeight &&
-                 this.jumpVelocity < this.config.DROP_VELOCITY) {
+                this.jumpVelocity < this.config.DROP_VELOCITY) {
                 this.jumpVelocity = this.config.DROP_VELOCITY;
             }
         },
