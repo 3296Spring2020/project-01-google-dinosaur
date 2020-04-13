@@ -11,6 +11,11 @@
      * @export
      */
     function Runner(outerContainerId, opt_config) {
+		var oImg = document.createElement("img");
+	oImg.src='img/instruction.png';
+	oImg.style.width=450+"px";
+            oImg.style.height=125+"px";
+	document.getElementsByTagName("body")[0].appendChild(oImg);
         // Singleton
         if (Runner.instance_) {
             return Runner.instance_;
@@ -26,7 +31,6 @@
         this.tRex = null;
         this.distanceMeter = null;
         this.distanceRan = 0;
-        this.scoreboard = null;
 
         this.highestScore = 0;
         this.time = 0;
@@ -34,7 +38,6 @@
         this.msPerFrame = 1000 / FPS;
         this.currentSpeed = this.config.SPEED;
         this.obstacles = [];
-        this.candy = [];
         this.started = false;
         this.activated = false;
         this.crashed = false;
@@ -87,12 +90,11 @@
         INITIAL_JUMP_VELOCITY: 12,
         MAX_CLOUDS: 6,
         MAX_OBSTACLE_LENGTH: 3,
-        MAX_CANDY_LENGTH: 1,
         MAX_SPEED: 12,
         MIN_JUMP_HEIGHT: 35,
         MOBILE_SPEED_COEFFICIENT: 1.2,
         RESOURCE_TEMPLATE_ID: 'audio-resources',
-        SPEED: 10,
+        SPEED: 6,
         SPEED_DROP_COEFFICIENT: 3
     };
     /**
@@ -126,10 +128,7 @@
         }, {
             name: 'CACTUS_SMALL',
             id: '1x-obstacle-small'
-        },{
-            name: 'CANDY',
-            id: '1x-cloud'
-        }, { 
+        }, {
             name: 'CLOUD',
             id: '1x-cloud'
         }, {
@@ -151,10 +150,7 @@
         }, {
             name: 'CACTUS_SMALL',
             id: '2x-obstacle-small'
-        },{
-            name: 'CANDY',
-            id: '2x-cloud'
-        }, { 
+        }, {
             name: 'CLOUD',
             id: '2x-cloud'
         }, {
@@ -187,20 +183,20 @@
      */
     Runner.keycodes = {
         JUMP: {
-            '38': 1,
-            '32': 1
-        }, // Up, spacebar
+            '87': 1
+        }, // Up
         DUCK: {
-            '40': 1
+            '83': 1
         }, // Down
         RESTART: {
-            '13': 1
+            '13': 1,
+			'32': 32
         }, // Enter
         LEFT: {
-            '37': 1
+            '65': 1
         }, // move left
         RIGHT: {
-            '39': 1
+            '68': 1
         }, // move right
         FLY: {
             '70': 1
@@ -327,12 +323,6 @@
             // Distance meter
             this.distanceMeter = new DistanceMeter(this.canvas,
                 this.images.TEXT_SPRITE, this.dimensions.WIDTH);
-
-            // Scoreboard
-            this.scoreboard = new Scoreboard();
-            // Initial high score
-            this.setHighScore();
-
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.images.TREX);
 
@@ -381,7 +371,6 @@
                 this.distanceMeter.calcXPos(this.dimensions.WIDTH);
                 this.clearCanvas();
                 this.horizon.update(0, 0, true);
-                this.horizon.updateC(0, 0, true);
                 this.tRex.update(0);
 
                 // Outer container and distance meter.
@@ -425,7 +414,12 @@
                 this.activated = true;
                 this.started = true;
             } else if (this.crashed) {
-                this.restart();
+               var storage=window.localStorage;
+                if(storage["PlaeryLost"]==0){
+					this.restart();
+					var mySelect = document.getElementById("winner");
+					mySelect.parentNode.removeChild(mySelect);
+				}
             }
         },
 
@@ -470,7 +464,6 @@
                 //}
                 this.runningTime += deltaTime;
                 var hasObstacles = this.runningTime > this.config.CLEAR_TIME;
-                var hasCandy = this.runningTime > this.config.CLEAR_TIME;
                 // First jump triggers the intro.
                 if (this.tRex.jumpCount == 1 && !this.playingIntro) {
                     this.playIntro();
@@ -478,14 +471,12 @@
                 // The horizon doesn't move until the intro is over.
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
-                  //  this.horizon.updateC(0, this.currentSpeed, hasCandy);
                 } else {
                     deltaTime = !this.started ? 0 : deltaTime;
                     this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
-                    //this.horizon.updateC(deltaTime, this.currentSpeed, hasCandy);
                 }
 
-                // Check for collisions
+                // Check for collisions.
                 var collision = hasObstacles &&
                     checkForCollision(this.horizon.obstacles[0], this.tRex);
                 if (!collision) {
@@ -494,45 +485,42 @@
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    this.gameOver();
+					
+					var PlaeryLost = localStorage["PlaeryLost"];
+					if(PlaeryLost == 1){
+						var storage=window.localStorage;
+						storage["PlaeryLost"]=0;
+						
+						var oImg = document.createElement("img");
+						oImg.src='img/1Win.png';
+						oImg.setAttribute("id", "winner");
+						document.getElementsByTagName("body")[0].appendChild(oImg);
+						
+						console.log(333);
+						this.gameOver();
+					}else{
+						var storage=window.localStorage;
+						storage["PlaeryLost"]=1;
+						this.gameOver();
+						
+					}
                 }
-                ////check for eating candy
-                //var eat = hasCandy &&
-                //   checkForeat(this.horizon.candy[0], this.tRex);
-                //if (!eat) {
-                //    this.distanceRan += this.currentSpeed * deltaTime / this.msPerFrame;
-                //    if (this.currentSpeed < this.config.MAX_SPEED) {
-                //        this.currentSpeed += this.config.ACCELERATION;
-                //    }
-                //} else {
-                //   // this.gameOver();
-                //}
-
-
-
-
+				
                 if (this.distanceMeter.getActualDistance(this.distanceRan) >
                     this.distanceMeter.maxScore) {
                     this.distanceRan = 0;
                 }
+
                 var playAcheivementSound = this.distanceMeter.update(deltaTime,
                     Math.ceil(this.distanceRan));
                 if (playAcheivementSound) {
                     this.playSound(this.soundFx.SCORE);
                 }
-
-
-
-
-
             }
             if (!this.crashed) {
                 this.tRex.update(deltaTime);
                 this.raq();
             }
-
-
-
         },
         /**
          * Event handler.
@@ -593,17 +581,20 @@
          * @param {Event} e
          */
         onKeyDown: function(e) {
-            if (!this.crashed && (Runner.keycodes.JUMP[String(e.keyCode)] ||
+            if (!this.crashed && (Runner.keycodes.RESTART[String(e.keyCode)] ||
                     e.type == Runner.events.TOUCHSTART)) {
-                if (!this.activated) {
-                    this.loadSounds();
-                    this.activated = true;
-                }
-                if (!this.tRex.jumping) {
+				if (!this.tRex.jumping&& !this.activated) {
                     this.playSound(this.soundFx.BUTTON_PRESS);
                     this.tRex.startJump();
 
                 }
+			   if (!this.activated) {
+				   var storage=window.localStorage;
+					storage["PlaeryLost"]=0;
+                    this.loadSounds();
+                    this.activated = true;
+                }
+                
                
             }
             if (!this.crashed && (Runner.keycodes.JUMP[String(e.keyCode)] ||
@@ -639,7 +630,12 @@
 
             if (this.crashed && e.type == Runner.events.TOUCHSTART &&
                 e.currentTarget == this.containerEl) {
-                this.restart();
+				var storage=window.localStorage;
+                if(storage["PlaeryLost"]==0){
+					this.restart();
+					var mySelect = document.getElementById("winner");
+					mySelect.parentNode.removeChild(mySelect);
+				}
             }
             // Speed drop, activated only when jump key is not pressed.
             if (Runner.keycodes.DUCK[e.keyCode] && this.tRex.jumping) {
@@ -667,8 +663,13 @@
                 if (Runner.keycodes.RESTART[keyCode] ||
                     (e.type == Runner.events.MOUSEUP && e.target == this.canvas) ||
                     (deltaTime >= this.config.GAMEOVER_CLEAR_TIME &&
-                        Runner.keycodes.JUMP[keyCode])) {
-                    this.restart();
+                        Runner.keycodes.RESTART[keyCode])) {
+                    var storage=window.localStorage;
+                if(storage["PlaeryLost"]==0){
+					this.restart();
+					var mySelect = document.getElementById("winner");
+					mySelect.parentNode.removeChild(mySelect);
+				}
                 }
             } else if (this.paused && isjumpKey) {
                 this.play();
@@ -718,34 +719,15 @@
             } else {
                 this.gameOverPanel.draw();
             }
-
             // Update the high score.
-            //        if (this.distanceRan > this.highestScore) {
-            //this.highestScore = Math.ceil(this.distanceRan);
-            //this.distanceMeter.setHighScore(this.highestScore);
-            //}
-
+            if (this.distanceRan > this.highestScore) {
+                this.highestScore = Math.ceil(this.distanceRan);
+                this.distanceMeter.setHighScore(this.highestScore);
+            }
             // Reset the time clock.
             this.time = performance.now();
             //Initialize scoreboard
-            var distance = Math.ceil(this.distanceRan)
-            var score = this.distanceMeter.getActualDistance(distance);
-            this.scoreboard.init(score, distance);
-
-            //set high score
-            this.setHighScore();
-
-            //show scoreboard
-            this.scoreboard.show();
-
-        },
-
-        setHighScore: function() {
-            var scores = this.scoreboard.get();
-            if (scores.length > 0) {
-                var dist = scores[0].Distance;
-                this.distanceMeter.setHighScore(dist);
-            }
+            this.initScoreboard();
         },
 
         stop: function() {
@@ -781,6 +763,41 @@
 
                 this.update();
             }
+        },
+        /*
+        LOCAL STORAGE Scoreboard
+        */
+
+ 
+        saveScoreboard: function() {
+            var scoreboard = this.retrieveScoreboard();
+
+            var name = prompt("Enter your name: ");
+            var value = Math.ceil(this.distanceRan);
+
+            scoreboard.push({
+                Name: name,
+                Score: this.distanceMeter.getActualDistance(value)
+            });
+
+            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
+            var scoreboard = scoreboard.slice(0, 10);
+            localStorage.SCOREBOARD = JSON.stringify(scoreboard);
+        },
+
+        showScoreboard: function() {
+            var scoreboard = this.retrieveScoreboard();
+        },
+
+        logScoreboard: function() {
+            console.table(this.retrieveScoreboard());
+        },
+
+        retrieveScoreboard: function() {
+            var scoreboard = [];
+            try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
+
+            return scoreboard;
         },
 
         /**
@@ -1005,80 +1022,9 @@
         if (opt_canvasCtx) {
             drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
         }
-       
-        var obstacleType = obstacle.typeConfig.type;
-       // var jsonData = JSON.stringify(obstacleType);
-      //  var doSave = confirm("Do you want to save your score?" + jsonData);
         // Simple outer bounds check.
         if (boxCompare(tRexBox, obstacleBox)) {
-            if (obstacleType == "CACTUS_LARGE") {
-                var collisionBoxes = obstacle.collisionBoxes;
-                var tRexCollisionBoxes = Trex.collisionBoxes;
-
-                // Detailed axis aligned box check.
-                for (var t = 0; t < tRexCollisionBoxes.length; t++) {
-                    for (var i = 0; i < collisionBoxes.length; i++) {
-                        // Adjust the box to actual positions.
-                        var adjTrexBox =
-                            createAdjustedCollisionBox(tRexCollisionBoxes[t], tRexBox);
-                        var adjObstacleBox =
-                            createAdjustedCollisionBox(collisionBoxes[i], obstacleBox);
-                        var crashed = boxCompare(adjTrexBox, adjObstacleBox);
-                        // Draw boxes for debug.
-                        if (opt_canvasCtx) {
-                            drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
-                        }
-                        if (crashed) {
-                            return [adjTrexBox, adjObstacleBox];
-                        }
-                    }
-                }
-            }
-            else if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
-
-                //   this.distanceRan += 100;
-              
-                 //distanceMeter.update(0, Math.ceil(1000));
-                tRex.yPos -= 50;
-                // var doSave = confirm("Do you want to save your score?" + tRex.yPos);
-               
-            }
-        }
-       
-   
-        return false;
-    };
-    //******************************************************************************
-    /**
-     * Check for candy.
-     * @param {!Candy} candy
-     * @param {!Trex} tRex T-rex object.
-     * @param {HTMLCanvasContext} opt_canvasCtx Optional canvas context for drawing
-     *    collision boxes.
-     * @return {Array.<CollisionBox>}
-     */
-    function checkForeat(candy, tRex, opt_canvasCtx) {
-        var candyBoxXPos = Runner.defaultDimensions.WIDTH + candy.xPos;
-
-        // Adjustments are made to the bounding box as there is a 1 pixel white
-        // border around the t-rex and candy.
-        var tRexBox = new CollisionBox(
-            tRex.xPos + 1,
-            tRex.yPos + 1,
-            tRex.config.WIDTH - 2,
-            tRex.config.HEIGHT - 2);
-        var candyBox = new CollisionBox(
-            candy.xPos + 1,
-            candy.yPos + 1,
-            candy.typeConfig.width * candy.size - 2,
-            candy.typeConfig.height - 2);
-        // Debug outer box
-        if (opt_canvasCtx) {
-            drawCollisionBoxes(opt_canvasCtx, tRexBox, candyBox);
-        }
-        // Simple outer bounds check.
-        if (boxCompare(tRexBox, candyBox)) {
-            var collisionBoxes = candy.collisionBoxes;
+            var collisionBoxes = obstacle.collisionBoxes;
             var tRexCollisionBoxes = Trex.collisionBoxes;
 
             // Detailed axis aligned box check.
@@ -1087,23 +1033,21 @@
                     // Adjust the box to actual positions.
                     var adjTrexBox =
                         createAdjustedCollisionBox(tRexCollisionBoxes[t], tRexBox);
-                    var adjCandyBox =
-                        createAdjustedCollisionBox(collisionBoxes[i], candyBox);
-                    var crashed = boxCompare(adjTrexBox, adjCandyBox);
+                    var adjObstacleBox =
+                        createAdjustedCollisionBox(collisionBoxes[i], obstacleBox);
+                    var crashed = boxCompare(adjTrexBox, adjObstacleBox);
                     // Draw boxes for debug.
                     if (opt_canvasCtx) {
-                        drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjCandyBox);
+                        drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
                     }
                     if (crashed) {
-                        return [adjTrexBox, adjCandyBox];
+                        return [adjTrexBox, adjObstacleBox];
                     }
                 }
             }
         }
         return false;
     };
-
-
 
     /**
      * Adjust the collision box.
@@ -1131,19 +1075,7 @@
             obstacleBox.width, obstacleBox.height);
         canvasCtx.restore();
     };
- //   /**
- //* Draw the collision boxes for debug.
- //*/
- //   function drawCandyCollisionBoxes(canvasCtx, tRexBox, candyBox) {
- //       canvasCtx.save();
- //       canvasCtx.strokeStyle = '#f00';
- //       canvasCtx.strokeRect(tRexBox.x, tRexBox.y,
- //           tRexBox.width, tRexBox.height);
- //       canvasCtx.strokeStyle = '#0f0';
- //       canvasCtx.strokeRect(candyBox.x, candyBox.y,
- //           candyBox.width, candyBox.height);
- //       canvasCtx.restore();
- //   };
+
     /**
      * Compare two collision boxes for a collision.
      * @param {CollisionBox} tRexBox
@@ -1157,40 +1089,15 @@
         var obstacleBoxX = obstacleBox.x;
         var obstacleBoxY = obstacleBox.y;
         // Axis-Aligned Bounding Box method.
-        if (tRexBox.x < obstacleBoxX + obstacleBox.width && tRexBox.x + tRexBox.width > obstacleBoxX &&
-            tRexBox.y < obstacleBox.y + obstacleBox.height && tRexBox.height + tRexBox.y > obstacleBox.y)
-        {
+        if (tRexBox.x < obstacleBoxX + obstacleBox.width &&
+            tRexBox.x + tRexBox.width > obstacleBoxX &&
+            tRexBox.y < obstacleBox.y + obstacleBox.height &&
+            tRexBox.height + tRexBox.y > obstacleBox.y) {
             crashed = true;
         }
 
         return crashed;
     };
-    ///**
-    //* Compare two collision boxes for eating candy.
-    //* @param {CollisionBox} tRexBox
-    //* @param {CollisionBox} candyBox
-    //* @return {boolean} Whether the boxes intersected.
-    //*/
-    //function boxCompare(tRexBox, candyBox) {
-    //    var eaten = false;
-    //    var tRexBoxX = tRexBox.x;
-    //    var tRexBoxY = tRexBox.y;
-    //    var candyBoxX = candyBox.x;
-    //    var candyBoxY = candyBox.y;
-    //    // Axis-Aligned Bounding Box method.
-    //    if (tRexBox.x < candyBoxX + candyBox.width &&
-    //        tRexBox.x + tRexBox.width > candyBoxX &&
-    //        tRexBox.y < candyBox.y + candyBoxX.height &&
-    //        tRexBox.height + tRexBox.y > candyBoxX.y) {
-    //        eaten = true;
-    //    }
-
-    //    return eaten;
-    //};
-
-
-
-
     //******************************************************************************
     /**
      * Collision box object.
@@ -1222,8 +1129,7 @@
         this.image = obstacleImg;
         this.typeConfig = type;
         this.gapCoefficient = gapCoefficient;
-         this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
-        //this.size = 3;
+        this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
         this.dimensions = dimensions;
         this.remove = false;
         this.xPos = 0;
@@ -1234,48 +1140,17 @@
 
         this.init(speed);
     };
-    //******************************************************************************
-    /**
-     * Candy.
-     * @param {HTMLCanvasCtx} canvasCtx
-     * @param {Candy.type} type
-     * @param {image} CandyImg Image sprite.
-     * @param {Object} dimensions
-     * @param {number} gapCoefficient Mutipler in determining the gap.
-     * @param {number} speed
-     */
-    function Candy(canvasCtx, type, candyImg, dimensions,
-        gapCoefficient, speed) {
-        this.canvasCtx = canvasCtx;
-        this.image = candyImg;
-        this.typeConfig = type;
-        this.gapCoefficient = gapCoefficient;
-        this.size = getRandomNum(1, Candy.MAX_CANDY_LENGTH);
-        this.dimensions = dimensions;
-        this.remove = false;
-        this.xPos = 0;
-        this.yPos = this.typeConfig.yPos;
-        this.width = 0;
-        this.collisionBoxes = [];
-        this.gap = 0;
-
-        this.init(speed);
-    };
-
-
-
     /**
      * Coefficient for calculating the maximum gap.
      * @const
      */
     Obstacle.MAX_GAP_COEFFICIENT = 1.5;
-    Candy.MAX_GAP_COEFFICIENT = 1;
     /**
-     * Maximum obstacle  and candy grouping count.
+     * Maximum obstacle grouping count.
      * @const
      */
-    Obstacle.MAX_OBSTACLE_LENGTH = 3,    //sardine: 3
-    Candy.MAX_CANDY_LENGTH = 1,
+    Obstacle.MAX_OBSTACLE_LENGTH = 3,
+
         Obstacle.prototype = {
             /**
              * Initialise the DOM for the obstacle.
@@ -1373,181 +1248,39 @@
                 }
             }
         };
-    Candy.prototype = {
-        /**
-         * Initialise the DOM for the candy.
-         * @param {number} speed
-         */
-        init: function (speed) {
-            this.cloneCollisionBoxes();
-            // Only allow sizing if we're at the right speed.
-            if (this.size > 1 && this.typeConfig.multipleSpeed > speed) {
-                this.size = 1;
-            }
-            this.width = this.typeConfig.width * this.size;
-            this.xPos = this.dimensions.WIDTH - this.width;
-            this.draw();
-
-            // Make collision box adjustments,
-            // Central box is adjusted to the size as one box.
-            //      ____        ______        ________
-            //    _|   |-|    _|     |-|    _|       |-|
-            //   | |<->| |   | |<--->| |   | |<----->| |
-            //   | | 1 | |   | |  2  | |   | |   3   | |
-            //   |_|___|_|   |_|_____|_|   |_|_______|_|
-            //
-            if (this.size > 1) {
-                this.collisionBoxes[1].width = this.width - this.collisionBoxes[0].width -
-                    this.collisionBoxes[2].width;
-                this.collisionBoxes[2].x = this.width - this.collisionBoxes[2].width;
-            }
-            this.gap = this.getGap(this.gapCoefficient, speed);
-        },
-        /**
-         * Draw and crop based on size.
-         */
-        draw: function () {
-            var sourceWidth = this.typeConfig.width;
-            var sourceHeight = this.typeConfig.height;
-            if (IS_HIDPI) {
-                sourceWidth = sourceWidth * 2;
-                sourceHeight = sourceHeight * 2;
-            }
-
-            // Sprite
-            var sourceX = (sourceWidth * this.size) * (0.5 * (this.size - 1));
-            this.canvasCtx.drawImage(this.image,
-                sourceX, 0,
-                sourceWidth * this.size, sourceHeight,
-                this.xPos, this.yPos,
-                this.typeConfig.width * this.size, this.typeConfig.height);
-        },
-        /**
-         * Obstacle frame update.
-         * @param {number} deltaTime
-         * @param {number} speed
-         */
-        update: function (deltaTime, speed) {
-            if (!this.remove) {
-                this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
-                this.draw();
-                if (!this.isVisible()) {
-                    this.remove = true;
-                }
-            }
-        },
-        /**
-         * Calculate a random gap size.
-         * - Minimum gap gets wider as speed increses
-         * @param {number} gapCoefficient
-         * @param {number} speed
-         * @return {number} The gap size.
-         */
-        getGap: function (gapCoefficient, speed) {
-            var minGap = Math.round(this.width * speed +
-                this.typeConfig.minGap * gapCoefficient);
-            var maxGap = Math.round(minGap * Candy.MAX_GAP_COEFFICIENT);
-            return getRandomNum(minGap, maxGap);
-        },
-
-        /**
-         * Check if candy is visible.
-         * @return {boolean} Whether the candy is in the game area.
-         */
-        isVisible: function () {
-            return this.xPos + this.width > 0;
-        },
-        /**
-         * Make a copy of the collision boxes, since these will change based on
-         * obstacle type and size.
-         */
-        cloneCollisionBoxes: function () {
-            var collisionBoxes = this.typeConfig.collisionBoxes;
-            for (var i = collisionBoxes.length - 1; i >= 0; i--) {
-                this.collisionBoxes[i] = new CollisionBox(collisionBoxes[i].x,
-                    collisionBoxes[i].y, collisionBoxes[i].width,
-                    collisionBoxes[i].height);
-            }
-        }
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Obstacle definitions.
      * minGap: minimum pixel space betweeen obstacles.
      * multipleSpeed: Speed at which multiples are allowed.
      */
-    Obstacle.types = [
-        {
+    Obstacle.types = [{
         type: 'CACTUS_SMALL',
         className: ' cactus cactus-small ',
         width: 17,
         height: 35,
         yPos: 105,
         multipleSpeed: 3,
-        minGap: 120
-        ,
+        minGap: 120,
         collisionBoxes: [
             new CollisionBox(0, 7, 5, 27),
             new CollisionBox(4, 0, 6, 34),
             new CollisionBox(10, 4, 7, 14)
         ]
-    }
-    ,
-    {
+    }, {
         type: 'CACTUS_LARGE',
         className: ' cactus cactus-large ',
         width: 25,
         height: 50,
         yPos: 90,
         multipleSpeed: 6,
-        minGap: 120
-        ,
+        minGap: 120,
         collisionBoxes: [
             new CollisionBox(0, 12, 7, 38),
             new CollisionBox(8, 0, 7, 49),
             new CollisionBox(13, 10, 10, 38)
         ]
-    }
-    ];
-    /**
-    * candy definitions.
-    * minGap: minimum pixel space betweeen candies.
-    * multipleSpeed: Speed at which multiples are allowed.
-    */
-    Candy.types = [{
-        type: 'CANDY',
-        className: ' candy ',
-        width: 17,
-        height: 85,
-        yPos: 255,
-        multipleSpeed: 3,
-        minGap: 120
-        ,
-        collisionBoxes: [
-            new CollisionBox(0, 15, 5, 27),
-            new CollisionBox(6, 0, 6, 34),
-            new CollisionBox(15, 15, 7, 14)
-        ]
-    },
-    ];
-
-
-
+    }];
     //******************************************************************************
     /**
      * T-rex game character.
@@ -1858,7 +1591,7 @@
         }
     };
     //******************************************************************************
-   
+
     /**
      * Handles displaying the distance meter.
      * @param {!HTMLCanvasElement} canvas
@@ -2286,7 +2019,6 @@
         this.dimensions = dimensions;
         this.gapCoefficient = gapCoefficient;
         this.obstacles = [];
-        this.candy = [];
         this.horizonOffsets = [0, 0];
         this.cloudFrequency = this.config.CLOUD_FREQUENCY;
 
@@ -2301,11 +2033,6 @@
         this.obstacleImgs = {
             CACTUS_SMALL: images.CACTUS_SMALL,
             CACTUS_LARGE: images.CACTUS_LARGE
-        };
-        //Candy
-        this.candyImgs = {
-            //  CANDY: images.CANDY
-            CANDY: images.CLOUD
         };
         this.init();
     };
@@ -2326,7 +2053,7 @@
          * Initialise the horizon. Just add the line and a cloud. No obstacles.
          */
         init: function() {
-        //    this.addCloud();
+            this.addCloud();
             this.horizonLine = new HorizonLine(this.canvas, this.horizonImg);
         },
 
@@ -2343,24 +2070,8 @@
             this.updateClouds(deltaTime, currentSpeed);
             if (updateObstacles) {
                 this.updateObstacles(deltaTime, currentSpeed);
-                this.updateCandy(deltaTime, currentSpeed);
             }
         },
-        ///**
-        //* @param {number} deltaTime
-        //* @param {number} currentSpeed
-        //* @param {boolean} updateCandy Used as an override to prevent
-        //*     the candy from being updated / added. This happens in the
-        //*     ease in section.
-        //*/
-        //updateC: function (deltaTime, currentSpeed, updateCandy) {
-        //    this.runningTime += deltaTime;
-        //    this.horizonLine.update(deltaTime, currentSpeed);
-        //    this.updateClouds(deltaTime, currentSpeed);
-        //    if (updateCandy) {
-        //        this.updateCandy(deltaTime, currentSpeed);
-        //    }
-        //},
         /**
          * Update the cloud positions.
          * @param {number} deltaTime
@@ -2379,7 +2090,7 @@
                 if (numClouds < this.config.MAX_CLOUDS &&
                     (this.dimensions.WIDTH - lastCloud.xPos) > lastCloud.cloudGap &&
                     this.cloudFrequency > Math.random()) {
-              //      this.addCloud();
+                    this.addCloud();
                 }
                 // Remove expired clouds.
                 this.clouds = this.clouds.filter(function(obj) {
@@ -2395,7 +2106,7 @@
         updateObstacles: function(deltaTime, currentSpeed) {
             // Obstacles, move to Horizon layer.
             var updatedObstacles = this.obstacles.slice(0);
-           
+
             for (var i = 0; i < this.obstacles.length; i++) {
                 var obstacle = this.obstacles[i];
                 obstacle.update(deltaTime, currentSpeed);
@@ -2419,87 +2130,25 @@
                 this.addNewObstacle(currentSpeed);
             }
         },
-        /**
-       * Update the Candy positions.
-       * @param {number} deltaTime
-       * @param {number} currentSpeed
-       */
-        updateCandy: function (deltaTime, currentSpeed) {
-            //// Candy, move to Horizon layer.
-            var updatedCandy = this.candy.slice(0);
 
-            for (var i = 0; i < this.candy.length; i++) {
-                var candy = this.candy[i];
-                candy.update(deltaTime, currentSpeed);
-                // Clean up existing candy.
-                if (candy.remove) {
-                    updatedCandy.shift();
-                }
-            }
-            this.candy = updatedCandy;
-            if (this.candy.length > 0) {
-                var lastcandy = this.candy[this.candy.length - 1];
-                if (lastcandy && !lastcandy.followingCandyCreated &&
-                    lastcandy.isVisible() &&
-                    (lastcandy.xPos + lastcandy.width + lastcandy.gap) <
-                    this.dimensions.WIDTH) {
-                    this.addNewCandy(currentSpeed);
-                    lastcandy.followingCandyCreated = true;
-                }
-            }
-            else {
-                // Create new candy.
-                this.addNewCandy(currentSpeed);
-            }
-        },
         /**
          * Add a new obstacle.
          * @param {number} currentSpeed
          */
         addNewObstacle: function(currentSpeed) {
-            var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
+            var obstacleTypeIndex =
+                getRandomNum(0, Obstacle.types.length - 1);
             var obstacleType = Obstacle.types[obstacleTypeIndex];
             var obstacleImg = this.obstacleImgs[obstacleType.type];
-            this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
-            if (obstacleType = "CACTUS_SMALL")
-            {
-            //    this.addCloud();
-            }
+            this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType,
+                obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
         },
-
-        /**
-       * Add a new candy.
-       * @param {number} currentSpeed
-       */
-        addNewCandy: function (currentSpeed) {
-            // var candyTypeIndex = getRandomNum(0, Candy.types.length - 1);
-
-            var candyTypeIndex = 0;
-            var candyType = Candy.types[candyTypeIndex];
-            var candyImg = this.candyImgs[candyType.type];
-            this.candy.push(new Candy(this.canvasCtx, candyType, candyImg, this.dimensions, this.gapCoefficient, currentSpeed));
-            
-          // this.obstacles.push(new Obstacle(this.canvasCtx, candyType, candyImg, this.dimensions, this.gapCoefficient, currentSpeed));
-            //var obstacleTypeIndex = getRandomNum(0, Candy.types.length - 1);
-            //var obstacleType = Obstacle.types[obstacleTypeIndex];
-            //var obstacleImg = this.obstacleImgs[obstacleType.type];
-            //this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
-        },
-
-       
-
-      
-
-
-
-
         /**
          * Reset the horizon layer.
-         * Remove existing obstacles,candy and reposition the horizon line.
+         * Remove existing obstacles and reposition the horizon line.
          */
         reset: function() {
             this.obstacles = [];
-            this.candy = [];
             this.horizonLine.reset();
         },
         /**
@@ -2520,72 +2169,7 @@
                 this.dimensions.WIDTH));
         }
     };
-
-    /***************************************/
-    /*
-    Scoreboard class
-    */
-
-    function Scoreboard() {
-
-    }
-
-
-    Scoreboard.prototype = {
-        init: function(score, dist) {
-            var doSave = confirm("Do you want to save your score?");
-            if (doSave) this.save(score, dist);
-        },
-
-        save: function(score, dist) {
-            var scoreboard = this.get();
-
-            var name = prompt("Enter your name: ");
-            scoreboard.push({
-                Name: name,
-                Score: score,
-                Distance: dist
-            });
-
-            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
-            var scoreboard = scoreboard.slice(0, 5);
-
-            localStorage.SCOREBOARD = JSON.stringify(scoreboard);
-        },
-
-        show: function() {
-            var scoreboard = this.get();
-            var count = 0;
-            var str = scoreboard.reduce(function(acc, item) {
-                count++;
-                var rank = count;
-                if (count > 1) {
-                    if (scoreboard[count - 1].Score == scoreboard[count - 2].Score) rank = count - 1;
-                }
-
-                return acc + "Rank: " + rank +
-                    "; Name: " + item.Name +
-                    "; Score: " + item.Score + "\n";
-            }, "");
-
-            alert("TOP 5 SCORES: \n\n" + str);
-        },
-
-        log: function() {
-            console.table(this.get());
-        },
-
-        get: function() {
-            var scoreboard = [];
-            try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
-
-            return scoreboard;
-        },
-    }
 })();
 
-new Runner('.interstitial-wrapper');
-new Runner('.interstitial-wrapper');
 
 new Runner('.interstitial-wrapper');
-
