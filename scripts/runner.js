@@ -2158,6 +2158,25 @@
     };
     //******************************************************************************
 
+    //******************************************************************************
+
+    /**
+     * Nightmode shows a moon and stars on the horizon.
+     */
+    function NightMode(canvas, spritePos, containerWidth) {
+        this.spritePos = spritePos;
+        this.canvas = canvas;
+        this.canvasCtx = canvas.getContext('2d');
+        this.xPos = containerWidth - 50;
+        this.yPos = 30;
+        this.currentPhase = 0;
+        this.opacity = 0;
+        this.containerWidth = containerWidth;
+        this.stars = [];
+        this.drawStars = false;
+        this.placeStars();
+    };
+
     /**
      * Horizon Line.
      * Consists of two connecting lines. Randomly assigns a flat / bumpy horizon.
@@ -2489,12 +2508,6 @@
             //var obstacleImg = this.obstacleImgs[obstacleType.type];
             //this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
         },
-
-
-
-
-
-
 
 
         /**
