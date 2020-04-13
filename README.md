@@ -42,12 +42,12 @@ Ray is a college student who studies software engineering. Usually, he often use
 
 ## Feature List
 
-- Increase the difficulty level.
-- Play this game while the Internet connection is perfect.
-- Display the player name and the top 5 scores at scoreboard managment when it is gameover.
+- Increase the level speed.
+- Display the player name and the top 5 highest scores at scoreboard managment when it is gameover.
 - Two players can play together at the same computer.
-- Player can change character model or music based on your favorite.
 - Allow the trex move left or right or fly or jump twice.
+- Display the magic candy.
+- Display the night mode to show moon and stars on the horizon.
 
 ## Programming language and development environment
 
@@ -108,7 +108,7 @@ Now, we can make any changes on this project to  achieve our goal
         
     };
     
- ## Week1
+## Week 1
 
 - The Trex can move to right and left. Besides, when user click F, Trex will fly. This function is for the future development
 
@@ -117,9 +117,14 @@ origin index.html rename to gaming.html and selector.js will selector the corres
 Add twoRunner.js for 2 palyers(in process)
 Add jquery for both html file.
 
-## Week2
+## Week 2
 
-- Now the Trex can jump twice or more
+- Now the Trex can jump twice or more.
 - Display the name and the top 5 scores at scoreboard management when the game is end.
-- Two players can play together in the same computer
+- Two players can play together in the same computer.
+
+## Week 3
+
+- Display the magic candy to fly.
+- Increase the level speed.
 
