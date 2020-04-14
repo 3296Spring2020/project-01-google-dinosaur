@@ -1,11 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-        <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src="index.html"></script>
 </head>
 <body>
    <button>Start the Game?</button>
-   <script src = "popup.js" charset = "utf-8"></scrpit>
+   <script src = "background.js" charset = "utf-8"></scrpit >
+
+    <script>
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+    if (evt.keyCode == 32) {
+        var box = document.getElementById("messageBox");
+        box.style.visibility="hidden";
+    }
 </body>
 </html>
