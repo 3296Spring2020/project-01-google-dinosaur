@@ -6,20 +6,9 @@
   "background": {
     "persistent": true,
     "scripts": [
-      "background.js",
-       "css/adminlte.min.css",
-      "scripts/bootstrap.bundle.min.js",
-      "scripts/firRunner.js",
-      "scripts/jquery.js",
-      "scripts/playerNum.js",
-      "scripts/runner.js",
-      "scripts/secRunner.js",
-      "scripts/selector.js",
-      "scripts/twoRunner.js",
 
-      "gaming.html",
-      "index.css",
-      "index.html"
+      "gaming.html"
+
 
 
     ]
@@ -30,19 +19,10 @@
   ],
 
   "web_accessible_resources": [
-    "css/adminlte.min.css",
-    "scripts/bootstrap.bundle.min.js",
-    "scripts/firRunner.js",
-    "scripts/jquery.js",
-    "scripts/playerNum.js",
-    "scripts/runner.js",
-    "scripts/secRunner.js",
-    "scripts/selector.js",
-    "scripts/twoRunner.js",
 
-    "gaming.html",
-    "index.css",
-    "index.html"
+
+    "gaming.html"
+
 
 
   ],
