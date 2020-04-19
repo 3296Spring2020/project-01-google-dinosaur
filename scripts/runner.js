@@ -180,6 +180,8 @@
         BUTTON_PRESS: 'offline-sound-press',
         HIT: 'offline-sound-hit',
         SCORE: 'offline-sound-reached'
+        //CANDY1: 'offline-sound-fly',
+        //CANDY2: 'offline-sound-score'
     };
     /**
      * Key code mapping.
@@ -466,6 +468,7 @@
                 this.activated = true;
                 this.started = true;
             } else if (this.crashed) {
+               
                 this.restart();
             }
         },
@@ -760,11 +763,11 @@
                 this.gameOverPanel.draw();
             }
 
-            // Update the high score.
-            //        if (this.distanceRan > this.highestScore) {
-            //this.highestScore = Math.ceil(this.distanceRan);
-            //this.distanceMeter.setHighScore(this.highestScore);
-            //}
+          //   Update the high score.
+                    if (this.distanceRan > this.highestScore) {
+            this.highestScore = Math.ceil(this.distanceRan);
+            this.distanceMeter.setHighScore(this.highestScore);
+            }
 
             // Reset the time clock.
             this.time = performance.now();
@@ -819,7 +822,8 @@
                 this.horizon.reset();
                 this.tRex.reset();
                 this.playSound(this.soundFx.BUTTON_PRESS);
-
+              // DistanceMeter.config.COEFFICIENT = 0.025;
+                this.distanceMeter.config.COEFFICIENT = 0.025;
                 this.update();
             }
         },
@@ -1077,11 +1081,32 @@
             }
             if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
 
-                //   this.distanceRan += 100;
+                obstacle.yPos = 9999;
+                var option = getRandomNum(1, 4);
+                if (option == 1) {
+                    DistanceMeter.config.COEFFICIENT *= 2;
+                  
+                }
+                else if (option == 2) {   //fly
+                    tRex.yPos -= 50;
+                 
+                }
+                else if (option == 3) {  //accelerate the speed
+                    Runner.config.ACCELERATION = 10;
+                }
+                else if (option == 4) {  //more obstacle and candy
+                    Obstacle.MAX_GAP_COEFFICIENT = 0.05;
+                }
+               
+                //Runner.distanceRan += 1000;
+                //Runner.distanceMeter.update(0, Math.ceil(Runner.distanceRan));
+                
 
-                //distanceMeter.update(0, Math.ceil(1000));
-                tRex.yPos -= 50;
-                // var doSave = confirm("Do you want to save your score?" + tRex.yPos);
+            //    Obstacle.MAX_GAP_COEFFICIENT
+              //  this.distanceMeter.update(0, Math.ceil(this.distanceRan));
+              //  if (this.distanceMeter.getActualDistance(this.distanceRan) >
+             //   var doSave = confirm(Runner.distanceRan);
+
 
             }
         }
@@ -1894,6 +1919,9 @@
             this.midair = false;
             this.speedDrop = false;
             this.jumpCount = 0;
+            
+            Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+            Runner.config.ACCELERATION = 0.001;
         }
     };
     //******************************************************************************
