@@ -88,7 +88,7 @@
         MAX_CLOUDS: 6,
         MAX_OBSTACLE_LENGTH: 3,
         MAX_CANDY_LENGTH: 1,
-        MAX_SPEED: 12,
+        MAX_SPEED: 15,
         MIN_JUMP_HEIGHT: 35,
         MOBILE_SPEED_COEFFICIENT: 1.2,
         RESOURCE_TEMPLATE_ID: 'audio-resources',
@@ -126,10 +126,10 @@
         }, {
             name: 'CACTUS_SMALL',
             id: '1x-obstacle-small'
-        },{
+        }, {
             name: 'CANDY',
             id: '1x-cloud'
-        }, { 
+        }, {
             name: 'CLOUD',
             id: '1x-cloud'
         }, {
@@ -151,10 +151,10 @@
         }, {
             name: 'CACTUS_SMALL',
             id: '2x-obstacle-small'
-        },{
+        }, {
             name: 'CANDY',
             id: '2x-cloud'
-        }, { 
+        }, {
             name: 'CLOUD',
             id: '2x-cloud'
         }, {
@@ -180,6 +180,8 @@
         BUTTON_PRESS: 'offline-sound-press',
         HIT: 'offline-sound-hit',
         SCORE: 'offline-sound-reached'
+        //CANDY1: 'offline-sound-fly',
+        //CANDY2: 'offline-sound-score'
     };
     /**
      * Key code mapping.
@@ -263,8 +265,49 @@
             var numImages = imageSources.length;
             for (var i = numImages - 1; i >= 0; i--) {
                 var imgSource = imageSources[i];
-                this.images[imgSource.name] = document.getElementById(imgSource.id);
-            }
+				if(i==numImages - 1){
+					var playerAct = localStorage["playerAct"];
+					console.log(playerAct)
+					if(playerAct=='girl'){
+									
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-girl';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive active');
+							$("#option13").parent().attr('class','btn bg-olive');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+				
+							imgSource.id = '1x-girl';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive active');
+							$("#option13").parent().attr('class','btn bg-olive');
+						}
+					}else if(playerAct=='deer'){			
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-deer';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive ');
+							$("#option13").parent().attr('class','btn bg-olive active');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+							imgSource.id = '1x-deer';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive ');
+							$("#option13").parent().attr('class','btn bg-olive active');
+						}
+					}else{
+						$("#option11").parent().attr('class','btn bg-olive active');
+						$("#option12").parent().attr('class','btn bg-olive ');
+						$("#option13").parent().attr('class','btn bg-olive');
+						
+					}
+					
+				} 
+				console.log(imgSource.id)
+				this.images[imgSource.name] = document.getElementById(imgSource.id);
+			
+			}
             this.init();
         },
         /**
@@ -425,6 +468,7 @@
                 this.activated = true;
                 this.started = true;
             } else if (this.crashed) {
+               
                 this.restart();
             }
         },
@@ -478,7 +522,7 @@
                 // The horizon doesn't move until the intro is over.
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
-                  //  this.horizon.updateC(0, this.currentSpeed, hasCandy);
+                    //  this.horizon.updateC(0, this.currentSpeed, hasCandy);
                 } else {
                     deltaTime = !this.started ? 0 : deltaTime;
                     this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
@@ -604,15 +648,15 @@
                     this.tRex.startJump();
 
                 }
-               
+
             }
             if (!this.crashed && (Runner.keycodes.JUMP[String(e.keyCode)] ||
-    e.type == Runner.events.TOUCHSTART)) {
+                    e.type == Runner.events.TOUCHSTART)) {
                 if (this.tRex.endJump) {
-                   
-                   //this.tRex.SecondJump();
+
+                    //this.tRex.SecondJump();
                     this.tRex.startJump();
-                  
+
                 }
 
             }
@@ -621,12 +665,12 @@
 
             if (!this.crashed && (Runner.keycodes.LEFT[String(e.keyCode)] ||
 
-     e.type == Runner.events.TOUCHSTART)) {
-                
+                    e.type == Runner.events.TOUCHSTART)) {
+
                 this.tRex.xPos -= 10;
 
             }
-           
+
             if (!this.crashed && (Runner.keycodes.RIGHT[String(e.keyCode)] ||
                     e.type == Runner.events.TOUCHSTART)) {
                 this.tRex.xPos += 10;
@@ -719,11 +763,11 @@
                 this.gameOverPanel.draw();
             }
 
-            // Update the high score.
-            //        if (this.distanceRan > this.highestScore) {
-            //this.highestScore = Math.ceil(this.distanceRan);
-            //this.distanceMeter.setHighScore(this.highestScore);
-            //}
+          //   Update the high score.
+                    if (this.distanceRan > this.highestScore) {
+            this.highestScore = Math.ceil(this.distanceRan);
+            this.distanceMeter.setHighScore(this.highestScore);
+            }
 
             // Reset the time clock.
             this.time = performance.now();
@@ -778,7 +822,8 @@
                 this.horizon.reset();
                 this.tRex.reset();
                 this.playSound(this.soundFx.BUTTON_PRESS);
-
+              // DistanceMeter.config.COEFFICIENT = 0.025;
+                this.distanceMeter.config.COEFFICIENT = 0.025;
                 this.update();
             }
         },
@@ -1005,10 +1050,10 @@
         if (opt_canvasCtx) {
             drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
         }
-       
+
         var obstacleType = obstacle.typeConfig.type;
-       // var jsonData = JSON.stringify(obstacleType);
-      //  var doSave = confirm("Do you want to save your score?" + jsonData);
+        // var jsonData = JSON.stringify(obstacleType);
+        //  var doSave = confirm("Do you want to save your score?" + jsonData);
         // Simple outer bounds check.
         if (boxCompare(tRexBox, obstacleBox)) {
             if (obstacleType == "CACTUS_LARGE") {
@@ -1035,17 +1080,36 @@
                 }
             }
             if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
-
-                //   this.distanceRan += 100;
-              
-                 //distanceMeter.update(0, Math.ceil(1000));
-                tRex.yPos -= 50;
-                // var doSave = confirm("Do you want to save your score?" + tRex.yPos);
+                obstacle.yPos = 9999;
+                var option = getRandomNum(1, 4);
+                if (option == 1) {
+                    DistanceMeter.config.COEFFICIENT *= 2;
+                  
+                }
+                else if (option == 2) {   //fly
+                    tRex.yPos -= 50;
+                 
+                }
+                else if (option == 3) {  //accelerate the speed
+                    Runner.config.ACCELERATION = 10;
+                }
+                else if (option == 4) {  //more obstacle and candy
+                    Obstacle.MAX_GAP_COEFFICIENT = 0.05;
+                }
                
+                //Runner.distanceRan += 1000;
+                //Runner.distanceMeter.update(0, Math.ceil(Runner.distanceRan));
+                
+
+            //    Obstacle.MAX_GAP_COEFFICIENT
+              //  this.distanceMeter.update(0, Math.ceil(this.distanceRan));
+              //  if (this.distanceMeter.getActualDistance(this.distanceRan) >
+             //   var doSave = confirm(Runner.distanceRan);
+
             }
         }
-       
-   
+
+
         return false;
     };
     //******************************************************************************
@@ -1131,19 +1195,19 @@
             obstacleBox.width, obstacleBox.height);
         canvasCtx.restore();
     };
- //   /**
- //* Draw the collision boxes for debug.
- //*/
- //   function drawCandyCollisionBoxes(canvasCtx, tRexBox, candyBox) {
- //       canvasCtx.save();
- //       canvasCtx.strokeStyle = '#f00';
- //       canvasCtx.strokeRect(tRexBox.x, tRexBox.y,
- //           tRexBox.width, tRexBox.height);
- //       canvasCtx.strokeStyle = '#0f0';
- //       canvasCtx.strokeRect(candyBox.x, candyBox.y,
- //           candyBox.width, candyBox.height);
- //       canvasCtx.restore();
- //   };
+    //   /**
+    //* Draw the collision boxes for debug.
+    //*/
+    //   function drawCandyCollisionBoxes(canvasCtx, tRexBox, candyBox) {
+    //       canvasCtx.save();
+    //       canvasCtx.strokeStyle = '#f00';
+    //       canvasCtx.strokeRect(tRexBox.x, tRexBox.y,
+    //           tRexBox.width, tRexBox.height);
+    //       canvasCtx.strokeStyle = '#0f0';
+    //       canvasCtx.strokeRect(candyBox.x, candyBox.y,
+    //           candyBox.width, candyBox.height);
+    //       canvasCtx.restore();
+    //   };
     /**
      * Compare two collision boxes for a collision.
      * @param {CollisionBox} tRexBox
@@ -1158,8 +1222,7 @@
         var obstacleBoxY = obstacleBox.y;
         // Axis-Aligned Bounding Box method.
         if (tRexBox.x < obstacleBoxX + obstacleBox.width && tRexBox.x + tRexBox.width > obstacleBoxX &&
-            tRexBox.y < obstacleBox.y + obstacleBox.height && tRexBox.height + tRexBox.y > obstacleBox.y)
-        {
+            tRexBox.y < obstacleBox.y + obstacleBox.height && tRexBox.height + tRexBox.y > obstacleBox.y) {
             crashed = true;
         }
 
@@ -1223,12 +1286,11 @@
         this.typeConfig = type;
         this.gapCoefficient = gapCoefficient;
         var jsonData = JSON.stringify(type.type);
-     //   var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
-        if (jsonData.substring(1,13) == "CACTUS_SMALL") {
-        //    var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+        //   var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+        if (jsonData.substring(1, 13) == "CACTUS_SMALL") {
+            //    var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
             this.size = 1;
-        }
-        else {
+        } else {
             this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
         }
         this.dimensions = dimensions;
@@ -1281,8 +1343,8 @@
      * Maximum obstacle  and candy grouping count.
      * @const
      */
-    Obstacle.MAX_OBSTACLE_LENGTH = 3,    //sardine: 3
-    Candy.MAX_CANDY_LENGTH = 1,
+    Obstacle.MAX_OBSTACLE_LENGTH = 3, //sardine: 3
+        Candy.MAX_CANDY_LENGTH = 1,
         Obstacle.prototype = {
             /**
              * Initialise the DOM for the obstacle.
@@ -1385,7 +1447,7 @@
          * Initialise the DOM for the candy.
          * @param {number} speed
          */
-        init: function (speed) {
+        init: function(speed) {
             this.cloneCollisionBoxes();
             // Only allow sizing if we're at the right speed.
             if (this.size > 1 && this.typeConfig.multipleSpeed > speed) {
@@ -1413,7 +1475,7 @@
         /**
          * Draw and crop based on size.
          */
-        draw: function () {
+        draw: function() {
             var sourceWidth = this.typeConfig.width;
             var sourceHeight = this.typeConfig.height;
             if (IS_HIDPI) {
@@ -1434,7 +1496,7 @@
          * @param {number} deltaTime
          * @param {number} speed
          */
-        update: function (deltaTime, speed) {
+        update: function(deltaTime, speed) {
             if (!this.remove) {
                 this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
                 this.draw();
@@ -1450,7 +1512,7 @@
          * @param {number} speed
          * @return {number} The gap size.
          */
-        getGap: function (gapCoefficient, speed) {
+        getGap: function(gapCoefficient, speed) {
             var minGap = Math.round(this.width * speed +
                 this.typeConfig.minGap * gapCoefficient);
             var maxGap = Math.round(minGap * Candy.MAX_GAP_COEFFICIENT);
@@ -1461,14 +1523,14 @@
          * Check if candy is visible.
          * @return {boolean} Whether the candy is in the game area.
          */
-        isVisible: function () {
+        isVisible: function() {
             return this.xPos + this.width > 0;
         },
         /**
          * Make a copy of the collision boxes, since these will change based on
          * obstacle type and size.
          */
-        cloneCollisionBoxes: function () {
+        cloneCollisionBoxes: function() {
             var collisionBoxes = this.typeConfig.collisionBoxes;
             for (var i = collisionBoxes.length - 1; i >= 0; i--) {
                 this.collisionBoxes[i] = new CollisionBox(collisionBoxes[i].x,
@@ -1498,44 +1560,40 @@
      * minGap: minimum pixel space betweeen obstacles.
      * multipleSpeed: Speed at which multiples are allowed.
      */
-    Obstacle.types = [
+    Obstacle.types = [{
+            type: 'CACTUS_SMALL',
+            className: ' cactus cactus-small ',
+            width: 17,
+            height: 35,
+            yPos: 105,
+            multipleSpeed: 3,
+            minGap: 120,
+            collisionBoxes: [
+                new CollisionBox(0, 7, 5, 27),
+                new CollisionBox(4, 0, 6, 34),
+                new CollisionBox(10, 4, 7, 14)
+            ]
+        },
         {
-        type: 'CACTUS_SMALL',
-        className: ' cactus cactus-small ',
-        width: 17,
-        height: 35,
-        yPos: 105,
-        multipleSpeed: 3,
-        minGap: 120
-        ,
-        collisionBoxes: [
-            new CollisionBox(0, 7, 5, 27),
-            new CollisionBox(4, 0, 6, 34),
-            new CollisionBox(10, 4, 7, 14)
-        ]
-    }
-    ,
-    {
-        type: 'CACTUS_LARGE',
-        className: ' cactus cactus-large ',
-        width: 25,
-        height: 50,
-        yPos: 90,
-        multipleSpeed: 6,
-        minGap: 120
-        ,
-        collisionBoxes: [
-            new CollisionBox(0, 12, 7, 38),
-            new CollisionBox(8, 0, 7, 49),
-            new CollisionBox(13, 10, 10, 38)
-        ]
-    }
+            type: 'CACTUS_LARGE',
+            className: ' cactus cactus-large ',
+            width: 25,
+            height: 50,
+            yPos: 90,
+            multipleSpeed: 6,
+            minGap: 120,
+            collisionBoxes: [
+                new CollisionBox(0, 12, 7, 38),
+                new CollisionBox(8, 0, 7, 49),
+                new CollisionBox(13, 10, 10, 38)
+            ]
+        }
     ];
     /**
-    * candy definitions.
-    * minGap: minimum pixel space betweeen candies.
-    * multipleSpeed: Speed at which multiples are allowed.
-    */
+     * candy definitions.
+     * minGap: minimum pixel space betweeen candies.
+     * multipleSpeed: Speed at which multiples are allowed.
+     */
     Candy.types = [{
         type: 'CANDY',
         className: ' candy ',
@@ -1543,15 +1601,13 @@
         height: 85,
         yPos: 255,
         multipleSpeed: 3,
-        minGap: 120
-        ,
+        minGap: 120,
         collisionBoxes: [
             new CollisionBox(0, 15, 5, 27),
             new CollisionBox(6, 0, 6, 34),
             new CollisionBox(15, 15, 7, 14)
         ]
-    },
-    ];
+    }, ];
 
 
 
@@ -1587,7 +1643,7 @@
         this.jumpspotX = 0;
         this.isSecondJump = true;
         this.init();
-       
+
     };
     /**
      * T-rex player config.
@@ -1765,14 +1821,14 @@
          * Initialise a jump.
          */
 
-        startJump: function () {
+        startJump: function() {
             if (this.jumping) {
                 this.update(0, Trex.status.JUMPING);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.jumping = true;
                 this.reachedMinHeight = false;
                 this.speedDrop = false;
-             //   this.isSecondJump = false;
+                //   this.isSecondJump = false;
             }
 
             if (!this.jumping) {
@@ -1784,20 +1840,19 @@
                 this.speedDrop = false;
 
             }
-           
+
         },
         /**
-
-        * Initialise a secondjump.
-        */
-        SecondJump: function () {
+         * Initialise a secondjump.
+         */
+        SecondJump: function() {
             this.playSound(this.soundFx.BUTTON_PRESS);
             if (this.SecondJump) {
-            
+
                 this.update(0, Trex.status.SECONDJ);
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY;
                 this.SecondJump = true;
-          
+
 
                 this.reachedMinHeight = false;
                 this.speedDrop = false;
@@ -1808,7 +1863,7 @@
          */
         endJump: function() {
             if (this.reachedMinHeight &&
-                 this.jumpVelocity < this.config.DROP_VELOCITY) {
+                this.jumpVelocity < this.config.DROP_VELOCITY) {
                 this.jumpVelocity = this.config.DROP_VELOCITY;
             }
         },
@@ -1862,10 +1917,13 @@
             this.midair = false;
             this.speedDrop = false;
             this.jumpCount = 0;
+            
+            Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+            Runner.config.ACCELERATION = 0.001;
         }
     };
     //******************************************************************************
-   
+
     /**
      * Handles displaying the distance meter.
      * @param {!HTMLCanvasElement} canvas
@@ -2167,6 +2225,25 @@
     };
     //******************************************************************************
 
+    //******************************************************************************
+
+    /**
+     * Nightmode shows a moon and stars on the horizon.
+     */
+    function NightMode(canvas, spritePos, containerWidth) {
+        this.spritePos = spritePos;
+        this.canvas = canvas;
+        this.canvasCtx = canvas.getContext('2d');
+        this.xPos = containerWidth - 50;
+        this.yPos = 30;
+        this.currentPhase = 0;
+        this.opacity = 0;
+        this.containerWidth = containerWidth;
+        this.stars = [];
+        this.drawStars = false;
+        this.placeStars();
+    };
+
     /**
      * Horizon Line.
      * Consists of two connecting lines. Randomly assigns a flat / bumpy horizon.
@@ -2333,7 +2410,7 @@
          * Initialise the horizon. Just add the line and a cloud. No obstacles.
          */
         init: function() {
-        //    this.addCloud();
+            //    this.addCloud();
             this.horizonLine = new HorizonLine(this.canvas, this.horizonImg);
         },
 
@@ -2386,7 +2463,7 @@
                 if (numClouds < this.config.MAX_CLOUDS &&
                     (this.dimensions.WIDTH - lastCloud.xPos) > lastCloud.cloudGap &&
                     this.cloudFrequency > Math.random()) {
-              //      this.addCloud();
+                    //      this.addCloud();
                 }
                 // Remove expired clouds.
                 this.clouds = this.clouds.filter(function(obj) {
@@ -2402,7 +2479,7 @@
         updateObstacles: function(deltaTime, currentSpeed) {
             // Obstacles, move to Horizon layer.
             var updatedObstacles = this.obstacles.slice(0);
-           
+
             for (var i = 0; i < this.obstacles.length; i++) {
                 var obstacle = this.obstacles[i];
                 obstacle.update(deltaTime, currentSpeed);
@@ -2427,11 +2504,11 @@
             }
         },
         /**
-       * Update the Candy positions.
-       * @param {number} deltaTime
-       * @param {number} currentSpeed
-       */
-        updateCandy: function (deltaTime, currentSpeed) {
+         * Update the Candy positions.
+         * @param {number} deltaTime
+         * @param {number} currentSpeed
+         */
+        updateCandy: function(deltaTime, currentSpeed) {
             //// Candy, move to Horizon layer.
             var updatedCandy = this.candy.slice(0);
 
@@ -2453,8 +2530,7 @@
                     this.addNewCandy(currentSpeed);
                     lastcandy.followingCandyCreated = true;
                 }
-            }
-            else {
+            } else {
                 // Create new candy.
                 this.addNewCandy(currentSpeed);
             }
@@ -2467,8 +2543,8 @@
             var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
             var obstacleType = Obstacle.types[obstacleTypeIndex];
             var obstacleImg = this.obstacleImgs[obstacleType.type];
-         //   if (obstacleType = "CACTUS_SMALL") {
-                this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
+            //   if (obstacleType = "CACTUS_SMALL") {
+            this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
             //}
             //else if (obstacleType = "CACTUS_LARGE") {
             //    this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
@@ -2476,36 +2552,29 @@
 
 
 
-            if (obstacleType = "CACTUS_SMALL")
-            {
-            //    this.addCloud();
+            if (obstacleType = "CACTUS_SMALL") {
+                //    this.addCloud();
             }
         },
 
         /**
-       * Add a new candy.
-       * @param {number} currentSpeed
-       */
-        addNewCandy: function (currentSpeed) {
+         * Add a new candy.
+         * @param {number} currentSpeed
+         */
+        addNewCandy: function(currentSpeed) {
             // var candyTypeIndex = getRandomNum(0, Candy.types.length - 1);
 
             var candyTypeIndex = 0;
             var candyType = Candy.types[candyTypeIndex];
             var candyImg = this.candyImgs[candyType.type];
             this.candy.push(new Candy(this.canvasCtx, candyType, candyImg, this.dimensions, this.gapCoefficient, currentSpeed));
-            
-          // this.obstacles.push(new Obstacle(this.canvasCtx, candyType, candyImg, this.dimensions, this.gapCoefficient, currentSpeed));
+
+            // this.obstacles.push(new Obstacle(this.canvasCtx, candyType, candyImg, this.dimensions, this.gapCoefficient, currentSpeed));
             //var obstacleTypeIndex = getRandomNum(0, Candy.types.length - 1);
             //var obstacleType = Obstacle.types[obstacleTypeIndex];
             //var obstacleImg = this.obstacleImgs[obstacleType.type];
             //this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
         },
-
-       
-
-      
-
-
 
 
         /**
@@ -2600,5 +2669,59 @@
 })();
 
 new Runner('.interstitial-wrapper');
-new Runner('.interstitial-wrapper');
-new Runner('.interstitial-wrapper');
+
+
+(function() {
+	document.getElementById("player11").innerHTML="<strong>Choose Your Actor:  .</strong>";
+	$("#actor2").remove();
+
+	$("#option11").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["playerAct"]="trex";
+		}
+		location.reload() 
+			 
+	});
+	$("#option12").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			
+			storage["playerAct"]="girl";
+		}
+		location.reload() 
+			 
+	});
+	$("#option13").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["playerAct"]="deer";
+		}
+		location.reload() 
+	});
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
