@@ -88,11 +88,11 @@
         MAX_CLOUDS: 6,
         MAX_OBSTACLE_LENGTH: 3,
         MAX_CANDY_LENGTH: 1,
-        MAX_SPEED: 13,
+        MAX_SPEED: 15,
         MIN_JUMP_HEIGHT: 35,
         MOBILE_SPEED_COEFFICIENT: 1.2,
         RESOURCE_TEMPLATE_ID: 'audio-resources',
-        SPEED: 6,
+        SPEED: 10,
         SPEED_DROP_COEFFICIENT: 3
     };
     /**
@@ -180,8 +180,8 @@
         BUTTON_PRESS: 'offline-sound-press',
         HIT: 'offline-sound-hit',
         SCORE: 'offline-sound-reached'
-        //CANDY1: 'offline-sound-fly',
-        //CANDY2: 'offline-sound-score'
+            //CANDY1: 'offline-sound-fly',
+            //CANDY2: 'offline-sound-score'
     };
     /**
      * Key code mapping.
@@ -468,7 +468,7 @@
                 this.activated = true;
                 this.started = true;
             } else if (this.crashed) {
-               
+
                 this.restart();
             }
         },
@@ -763,10 +763,10 @@
                 this.gameOverPanel.draw();
             }
 
-          //   Update the high score.
-                    if (this.distanceRan > this.highestScore) {
-            this.highestScore = Math.ceil(this.distanceRan);
-            this.distanceMeter.setHighScore(this.highestScore);
+            //   Update the high score.
+            if (this.distanceRan > this.highestScore) {
+                this.highestScore = Math.ceil(this.distanceRan);
+                this.distanceMeter.setHighScore(this.highestScore);
             }
 
             // Reset the time clock.
@@ -822,7 +822,7 @@
                 this.horizon.reset();
                 this.tRex.reset();
                 this.playSound(this.soundFx.BUTTON_PRESS);
-              // DistanceMeter.config.COEFFICIENT = 0.025;
+                // DistanceMeter.config.COEFFICIENT = 0.025;
                 this.distanceMeter.config.COEFFICIENT = 0.025;
                 this.update();
             }
@@ -1085,27 +1085,24 @@
                 var option = getRandomNum(1, 4);
                 if (option == 1) {
                     DistanceMeter.config.COEFFICIENT *= 2;
-                  
-                }
-                else if (option == 2) {   //fly
+
+                } else if (option == 2) { //fly
                     tRex.yPos -= 50;
-                 
-                }
-                else if (option == 3) {  //accelerate the speed
+
+                } else if (option == 3) { //accelerate the speed
                     Runner.config.ACCELERATION = 10;
-                }
-                else if (option == 4) {  //more obstacle and candy
+                } else if (option == 4) { //more obstacle and candy
                     Obstacle.MAX_GAP_COEFFICIENT = 0.05;
                 }
-               
+
                 //Runner.distanceRan += 1000;
                 //Runner.distanceMeter.update(0, Math.ceil(Runner.distanceRan));
-                
 
-            //    Obstacle.MAX_GAP_COEFFICIENT
-              //  this.distanceMeter.update(0, Math.ceil(this.distanceRan));
-              //  if (this.distanceMeter.getActualDistance(this.distanceRan) >
-             //   var doSave = confirm(Runner.distanceRan);
+
+                //    Obstacle.MAX_GAP_COEFFICIENT
+                //  this.distanceMeter.update(0, Math.ceil(this.distanceRan));
+                //  if (this.distanceMeter.getActualDistance(this.distanceRan) >
+                //   var doSave = confirm(Runner.distanceRan);
 
 
             }
@@ -1919,7 +1916,7 @@
             this.midair = false;
             this.speedDrop = false;
             this.jumpCount = 0;
-            
+
             Obstacle.MAX_GAP_COEFFICIENT = 1.5;
             Runner.config.ACCELERATION = 0.001;
         }
@@ -2244,141 +2241,6 @@
         this.stars = [];
         this.drawStars = false;
         this.placeStars();
-    };
-
-    /**
-     * @enum {number}
-     */
-    NightMode.config = {
-        FADE_SPEED: 0.035,
-        HEIGHT: 40,
-        MOON_SPEED: 0.25,
-        NUM_STARS: 2,
-        STAR_SIZE: 9,
-        STAR_SPEED: 0.3,
-        STAR_MAX_Y: 70,
-        WIDTH: 20
-    };
-
-    NightMode.phases = [140, 120, 100, 60, 40, 20, 0];
-
-    NightMode.prototype = {
-        /**
-         * Update moving moon, changing phases.
-         * @param {boolean} activated Whether night mode is activated.
-         * @param {number} delta
-         */
-        update: function(activated, delta) {
-            // Moon phase.
-            if (activated && this.opacity == 0) {
-                this.currentPhase++;
-
-                if (this.currentPhase >= NightMode.phases.length) {
-                    this.currentPhase = 0;
-                }
-            }
-
-            // Fade in / out.
-            if (activated && (this.opacity < 1 || this.opacity == 0)) {
-                this.opacity += NightMode.config.FADE_SPEED;
-            } else if (this.opacity > 0) {
-                this.opacity -= NightMode.config.FADE_SPEED;
-            }
-
-            // Set moon positioning.
-            if (this.opacity > 0) {
-                this.xPos = this.updateXPos(this.xPos, NightMode.config.MOON_SPEED);
-
-                // Update stars.
-                if (this.drawStars) {
-                    for (var i = 0; i < NightMode.config.NUM_STARS; i++) {
-                        this.stars[i].x = this.updateXPos(this.stars[i].x,
-                            NightMode.config.STAR_SPEED);
-                    }
-                }
-                this.draw();
-            } else {
-                this.opacity = 0;
-                this.placeStars();
-            }
-            this.drawStars = true;
-        },
-
-        updateXPos: function(currentPos, speed) {
-            if (currentPos < -NightMode.config.WIDTH) {
-                currentPos = this.containerWidth;
-            } else {
-                currentPos -= speed;
-            }
-            return currentPos;
-        },
-
-        draw: function() {
-            var moonSourceWidth = this.currentPhase == 3 ? NightMode.config.WIDTH * 2 :
-                NightMode.config.WIDTH;
-            var moonSourceHeight = NightMode.config.HEIGHT;
-            var moonSourceX = this.spritePos.x + NightMode.phases[this.currentPhase];
-            var moonOutputWidth = moonSourceWidth;
-            var starSize = NightMode.config.STAR_SIZE;
-            var starSourceX = Runner.spriteDefinition.LDPI.STAR.x;
-
-            if (IS_HIDPI) {
-                moonSourceWidth *= 2;
-                moonSourceHeight *= 2;
-                moonSourceX = this.spritePos.x +
-                    (NightMode.phases[this.currentPhase] * 2);
-                starSize *= 2;
-                starSourceX = Runner.spriteDefinition.HDPI.STAR.x;
-            }
-            this.canvasCtx.save();
-            this.canvasCtx.globalAlpha = this.opacity;
-
-            // Stars.
-            if (this.drawStars) {
-                for (var i = 0; i < NightMode.config.NUM_STARS; i++) {
-                    this.canvasCtx.drawImage(Runner.imageSprite,
-                        starSourceX, this.stars[i].sourceY, starSize, starSize,
-                        Math.round(this.stars[i].x), this.stars[i].y,
-                        NightMode.config.STAR_SIZE, NightMode.config.STAR_SIZE);
-                }
-            }
-
-            // Moon.
-            this.canvasCtx.drawImage(Runner.imageSprite, moonSourceX,
-                this.spritePos.y, moonSourceWidth, moonSourceHeight,
-                Math.round(this.xPos), this.yPos,
-                moonOutputWidth, NightMode.config.HEIGHT);
-
-            this.canvasCtx.globalAlpha = 1;
-            this.canvasCtx.restore();
-        },
-
-        // Do star placement.
-        placeStars: function() {
-            var segmentSize = Math.round(this.containerWidth /
-                NightMode.config.NUM_STARS);
-
-            for (var i = 0; i < NightMode.config.NUM_STARS; i++) {
-                this.stars[i] = {};
-                this.stars[i].x = getRandomNum(segmentSize * i, segmentSize * (i + 1));
-                this.stars[i].y = getRandomNum(0, NightMode.config.STAR_MAX_Y);
-
-                if (IS_HIDPI) {
-                    this.stars[i].sourceY = Runner.spriteDefinition.HDPI.STAR.y +
-                        NightMode.config.STAR_SIZE * 2 * i;
-                } else {
-                    this.stars[i].sourceY = Runner.spriteDefinition.LDPI.STAR.y +
-                        NightMode.config.STAR_SIZE * i;
-                }
-            }
-        },
-
-        reset: function() {
-            this.currentPhase = 0;
-            this.opacity = 0;
-            this.update(false);
-        }
-
     };
 
     /**
