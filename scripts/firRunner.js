@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 (function() {
     'use strict';
+	
+	
+
     /**
      * T-Rex runner.
      * @param {string} outerContainerId Outer containing element id.
@@ -24,7 +27,7 @@
         this.outerContainerEl = document.querySelector(outerContainerId);
         this.containerEl = null;
         this.config = opt_config || Runner.config;
-
+		
         this.dimensions = Runner.defaultDimensions;
         this.canvas = null;
         this.canvasCtx = null;
@@ -259,8 +262,49 @@
             var numImages = imageSources.length;
             for (var i = numImages - 1; i >= 0; i--) {
                 var imgSource = imageSources[i];
-                this.images[imgSource.name] = document.getElementById(imgSource.id);
-            }
+				if(i==numImages - 1){
+					var player1Act = localStorage["player1Act"];
+					console.log(player1Act)
+					if(player1Act=='girl'){
+						console.log(imgSource.id)			
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-girl';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive active');
+							$("#option13").parent().attr('class','btn bg-olive');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+							imgSource.id = '1x-girl';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive active');
+							$("#option13").parent().attr('class','btn bg-olive');
+						}
+					}else if(player1Act=='deer'){
+						console.log(imgSource.id)			
+						if(imgSource.id.indexOf("2x")!=-1){
+							imgSource.id = '2x-deer';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive ');
+							$("#option13").parent().attr('class','btn bg-olive active');
+						}
+						if(imgSource.id.indexOf("1x")!=-1){
+							imgSource.id = '1x-deer';
+							$("#option11").parent().attr('class','btn bg-olive ');
+							$("#option12").parent().attr('class','btn bg-olive ');
+							$("#option13").parent().attr('class','btn bg-olive active');
+						}
+					}else{
+						$("#option11").parent().attr('class','btn bg-olive active');
+						$("#option12").parent().attr('class','btn bg-olive ');
+						$("#option13").parent().attr('class','btn bg-olive');
+						
+					}
+					
+					
+				} 
+				this.images[imgSource.name] = document.getElementById(imgSource.id);
+			
+			}
             this.init();
         },
         /**
@@ -2171,5 +2215,54 @@
     };
 })();
 
-
 new Runner('.interstitial-wrapper');
+
+
+
+$(function (){
+	$("#option11").click(function(){
+		
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["player1Act"]="trex";
+		}
+		location.reload() 
+			 
+	});
+	$("#option12").click(function(){
+
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["player1Act"]="girl";
+		}
+		location.reload() 
+			 
+	});
+	$("#option13").click(function(){
+		if(!window.localStorage){
+			alert("Browser  is not supported localstorage");
+			return false;
+		}else{
+			var storage=window.localStorage;
+			storage["player1Act"]="deer";
+		}
+		location.reload() 
+	});
+	
+})
+
+
+
+
+
+
+
+
+
+

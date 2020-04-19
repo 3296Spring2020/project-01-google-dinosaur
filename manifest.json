@@ -3,15 +3,32 @@
   "version": "1.0",
   "description": " modified game",
   "manifest_version": 2,
-  "content_scripts":[
-      {
-          "matches":["<all_urls>"],
-          "js": ["content.js"]
-      }
+  "background": {
+    "persistent": true,
+    "scripts": [
+
+      "gaming.html"
+
+
+
+    ]
+  },
+  "permissions": [
+    "contextMenus",
+    "activeTab"
   ],
-  "browser_action":{
-      "default_popup":"popup.html",
-      "default_title":"Game"
-      
+
+  "web_accessible_resources": [
+
+
+    "gaming.html"
+
+
+
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "game"
   }
+
 }

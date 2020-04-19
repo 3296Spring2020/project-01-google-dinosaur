@@ -1080,6 +1080,7 @@
                 }
             }
             if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
+
                 obstacle.yPos = 9999;
                 var option = getRandomNum(1, 4);
                 if (option == 1) {
@@ -1105,6 +1106,7 @@
               //  this.distanceMeter.update(0, Math.ceil(this.distanceRan));
               //  if (this.distanceMeter.getActualDistance(this.distanceRan) >
              //   var doSave = confirm(Runner.distanceRan);
+
 
             }
         }

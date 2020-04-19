@@ -1,29 +1,30 @@
-{
-  "name": "Awesome Test Extension",
-   
-  "background": {
-    "scripts": [
-                "lib/jquery.js",
-                "playNum.js",
-                "runner.js",
-                "selector.js",
-                "twoRunners.js"
-                "background.js"],
-    "persistent": false
-  }
+var contextMenus = {};
 
-}
-chrome.runtime.onInstalled.addListener(function()){
-    chrome.storage.sync.set(
-    {
-    config:[
+contextMenus.createGame =
+    chrome.contextMenus.create(
         {
-            domain:'docker',
-            color:'#2496ed'/
+            "title": "Awesome Testing extension",
+            "contexts":["editable"]
         },
-    ],
-    },
-        null
-  );
+        function () {
+            if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError.message);
+            }
+        }
+
+    );
+chrome.contextMenus.onVisited.addListener(contextMenuHandler);
+
+function contextMenuHandler(info, tab) {
+    if (info.menuItemId === contextMenus.createGame) {
+        console.log("hii");
+        chrome.tabs.executeScript(
+            {
+                file: "gaming.html"
+
+            }
+        );
+    } 
+
     
 }
