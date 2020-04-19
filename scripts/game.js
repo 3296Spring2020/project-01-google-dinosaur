@@ -35,7 +35,7 @@
 
         this.distanceMeter = null;
         this.distanceRan = 0;
-
+        this.scoreboard = null;
         this.highestScore = 0;
 
         this.time = 0;
@@ -363,6 +363,12 @@
             // Distance meter
             this.distanceMeter = new DistanceMeter(this.canvas,
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
+
+            // Scoreboard
+            this.scoreboard = new Scoreboard();
+
+            // Initial high score
+            this.setHighScore();
 
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
@@ -775,42 +781,62 @@
             }
 
             // Update the high score.
-            if (this.distanceRan > this.highestScore) {
-                this.highestScore = Math.ceil(this.distanceRan);
-                this.distanceMeter.setHighScore(this.highestScore);
-                currentScore = Math.round(this.highestScore * 0.025);
-                var score_d = 0;
-                if (document.getElementById("score-5") !== null) {
-                    score_d = document.getElementById("score-5").innerHTML;
-                }
-                if (currentScore > score_d) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/inc/check.php?score=' + currentScore, false);
-                    xhr.send();
-                    if (xhr.status != 200) {
-                        //console.log( xhr.status + ': ' + xhr.statusText );
-                    } else {
-                        //console.log( xhr.responseText );
-                        if (xhr.responseText != '') {
-                            if (user_name == '') {
-                                user_name = prompt(xhr.responseText, 'Anonym');
-                                if (user_name == 'null' || user_name == '') {
-                                    user_name = 'Anonym';
-                                }
-                            } else {
-                                alert(xhr.responseText);
-                            }
-                            xhr.open('GET', '/inc/set.php?name=' + user_name + '&score=' + currentScore, false);
-                            xhr.send();
-                            location.reload();
-                        }
-                    }
-                }
-            }
+            // if (this.distanceRan > this.highestScore) {
+            //     this.highestScore = Math.ceil(this.distanceRan);
+            //     this.distanceMeter.setHighScore(this.highestScore);
+            //     currentScore = Math.round(this.highestScore * 0.025);
+            //     var score_d = 0;
+            //     if (document.getElementById("score-5") !== null) {
+            //         score_d = document.getElementById("score-5").innerHTML;
+            //     }
+            //     if (currentScore > score_d) {
+            //         var xhr = new XMLHttpRequest();
+            //         xhr.open('GET', '/inc/check.php?score=' + currentScore, false);
+            //         xhr.send();
+            //         if (xhr.status != 200) {
+            //             //console.log( xhr.status + ': ' + xhr.statusText );
+            //         } else {
+            //             //console.log( xhr.responseText );
+            //             if (xhr.responseText != '') {
+            //                 if (user_name == '') {
+            //                     user_name = prompt(xhr.responseText, 'Anonym');
+            //                     if (user_name == 'null' || user_name == '') {
+            //                         user_name = 'Anonym';
+            //                     }
+            //                 } else {
+            //                     alert(xhr.responseText);
+            //                 }
+            //                 xhr.open('GET', '/inc/set.php?name=' + user_name + '&score=' + currentScore, false);
+            //                 xhr.send();
+            //                 location.reload();
+            //             }
+            //         }
+            //     }
+            // }
 
             // Reset the time clock.
             this.time = getTimeStamp();
+
+            //Initialize scoreboard
+            var distance = Math.ceil(this.distanceRan)
+            var score = this.distanceMeter.getActualDistance(distance);
+            this.scoreboard.init(score, distance);
+
+            //set high score
+            this.setHighScore();
+
+            //show scoreboard
+            this.scoreboard.show();
         },
+
+        setHighScore: function() {
+            var scores = this.scoreboard.get();
+            if (scores.length > 0) {
+                var dist = scores[0].Distance;
+                this.distanceMeter.setHighScore(dist);
+            }
+        },
+
 
         stop: function() {
             this.activated = false;
@@ -2537,6 +2563,68 @@
                 this.dimensions.WIDTH));
         }
     };
+
+    /***************************************/
+    /*
+    Scoreboard class
+    */
+
+    function Scoreboard() {
+
+    }
+
+    Scoreboard.prototype = {
+        init: function(score, dist) {
+            var doSave = confirm("Do you want to save your score?");
+            if (doSave) this.save(score, dist);
+        },
+
+        save: function(score, dist) {
+            var scoreboard = this.get();
+
+            var name = prompt("Enter your name: ");
+            scoreboard.push({
+                Name: name,
+                Score: score,
+                Distance: dist
+            });
+
+            scoreboard.sort(function(a, b) { return a.Score > b.Score ? -1 : 1 });
+            var scoreboard = scoreboard.slice(0, 5);
+
+            localStorage.SCOREBOARD = JSON.stringify(scoreboard);
+        },
+
+        show: function() {
+            var scoreboard = this.get();
+            var count = 0;
+            var str = scoreboard.reduce(function(acc, item) {
+                count++;
+                var rank = count;
+                if (count > 1) {
+                    if (scoreboard[count - 1].Score == scoreboard[count - 2].Score) rank = count - 1;
+                }
+
+                return acc + "Rank: " + rank +
+                    "; Name: " + item.Name +
+                    "; Score: " + item.Score + "\n";
+            }, "");
+
+            alert("TOP 5 SCORES: \n\n" + str);
+        },
+
+        log: function() {
+            console.table(this.get());
+        },
+
+        get: function() {
+            var scoreboard = [];
+            try { scoreboard = localStorage.SCOREBOARD ? JSON.parse(localStorage.SCOREBOARD) : []; } catch (ex) { localStorage.clear(); }
+
+            return scoreboard;
+        },
+    }
+
 })();
 
 //start the game
