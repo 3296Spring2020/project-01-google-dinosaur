@@ -3,6 +3,7 @@
   "version": "1.0",
   "description": " modified game",
   "manifest_version": 2,
+
   /*"background": {
     "persistent": true,
     "scripts": [
@@ -16,6 +17,7 @@
 
     ]
   },*/
+
   "permissions": [
     "contextMenus",
     "activeTab"
@@ -35,7 +37,11 @@
   ],
 
   "browser_action": {
-    "default_popup": "gaming.html",
+
+
+
+    "default_popup": "index.html",
+
     "default_title": "game"
   },
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
