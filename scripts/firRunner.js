@@ -3,9 +3,6 @@
 // found in the LICENSE file.
 (function() {
     'use strict';
-	
-	
-
     /**
      * T-Rex runner.
      * @param {string} outerContainerId Outer containing element id.
@@ -27,6 +24,18 @@
         this.outerContainerEl = document.querySelector(outerContainerId);
         this.containerEl = null;
         this.config = opt_config || Runner.config;
+		
+		var difficulty = localStorage["difficulty"];
+		
+		if(difficulty =='medium'){
+			this.config.ACCELERATION = 0.2;
+			this.config.MAX_SPEED = 25;
+		}else if(difficulty =='carzy'){
+			this.config.ACCELERATION = 0.5;
+			this.config.MAX_SPEED = 40;
+		}
+		
+		
 		
         this.dimensions = Runner.defaultDimensions;
         this.canvas = null;
@@ -1066,8 +1075,12 @@
         if (opt_canvasCtx) {
             drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
         }
+		
+		var obstacleType = obstacle.typeConfig.type;
+		
         // Simple outer bounds check.
         if (boxCompare(tRexBox, obstacleBox)) {
+			if (obstacleType == "CACTUS_LARGE") {
             var collisionBoxes = obstacle.collisionBoxes;
             var tRexCollisionBoxes = Trex.collisionBoxes;
 
@@ -1088,6 +1101,23 @@
                         return [adjTrexBox, adjObstacleBox];
                     }
                 }
+            }
+			}
+			
+			if (obstacleType == "CACTUS_SMALL" && boxCompare(tRexBox, obstacleBox)) {
+
+                obstacle.yPos = 9999;
+                var option = getRandomNum(1, 3);
+                if (option == 1) {
+                   
+
+                } else if (option == 2) { //fly
+                    tRex.yPos -= 50;
+
+                } else if (option == 3) { //more obstacle and candy
+                   Obstacle.MAX_GAP_COEFFICIENT = 0.05;
+                } 
+
             }
         }
         return false;
@@ -1173,7 +1203,38 @@
         this.image = obstacleImg;
         this.typeConfig = type;
         this.gapCoefficient = gapCoefficient;
-        this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
+       
+		var jsonData = JSON.stringify(type.type);
+        //   var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+        if (jsonData.substring(1, 13) == "CACTUS_SMALL") {
+            //    var doSave = confirm(jsonData.substring(1, 13) + "CACTUS_SMALL");
+            this.size = 1;
+        } else {
+            this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
+        }
+	   
+        this.dimensions = dimensions;
+        this.remove = false;
+        this.xPos = 0;
+        this.yPos = this.typeConfig.yPos;
+        this.width = 0;
+        this.collisionBoxes = [];
+        this.gap = 0;
+
+        this.init(speed);
+    };
+	
+	
+	
+	
+	
+	function Candy(canvasCtx, type, candyImg, dimensions,
+        gapCoefficient, speed) {
+        this.canvasCtx = canvasCtx;
+        this.image = candyImg;
+        this.typeConfig = type;
+        this.gapCoefficient = gapCoefficient;
+        this.size = getRandomNum(1, Candy.MAX_CANDY_LENGTH);
         this.dimensions = dimensions;
         this.remove = false;
         this.xPos = 0;
@@ -1189,11 +1250,13 @@
      * @const
      */
     Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+    Candy.MAX_GAP_COEFFICIENT = 1;
     /**
-     * Maximum obstacle grouping count.
+     * Maximum obstacle  and candy grouping count.
      * @const
      */
-    Obstacle.MAX_OBSTACLE_LENGTH = 3,
+    Obstacle.MAX_OBSTACLE_LENGTH = 3, //sardine: 3
+        Candy.MAX_CANDY_LENGTH = 1,
 
         Obstacle.prototype = {
             /**
@@ -1293,6 +1356,103 @@
             }
         };
 
+	Candy.prototype = {
+        /**
+         * Initialise the DOM for the candy.
+         * @param {number} speed
+         */
+        init: function(speed) {
+            this.cloneCollisionBoxes();
+            // Only allow sizing if we're at the right speed.
+            if (this.size > 1 && this.typeConfig.multipleSpeed > speed) {
+                this.size = 1;
+            }
+            this.width = this.typeConfig.width * this.size;
+            this.xPos = this.dimensions.WIDTH - this.width;
+            this.draw();
+
+            // Make collision box adjustments,
+            // Central box is adjusted to the size as one box.
+            //      ____        ______        ________
+            //    _|   |-|    _|     |-|    _|       |-|
+            //   | |<->| |   | |<--->| |   | |<----->| |
+            //   | | 1 | |   | |  2  | |   | |   3   | |
+            //   |_|___|_|   |_|_____|_|   |_|_______|_|
+            //
+            if (this.size > 1) {
+                this.collisionBoxes[1].width = this.width - this.collisionBoxes[0].width -
+                    this.collisionBoxes[2].width;
+                this.collisionBoxes[2].x = this.width - this.collisionBoxes[2].width;
+            }
+            this.gap = this.getGap(this.gapCoefficient, speed);
+        },
+        /**
+         * Draw and crop based on size.
+         */
+        draw: function() {
+            var sourceWidth = this.typeConfig.width;
+            var sourceHeight = this.typeConfig.height;
+            if (IS_HIDPI) {
+                sourceWidth = sourceWidth * 2;
+                sourceHeight = sourceHeight * 2;
+            }
+
+            // Sprite
+            var sourceX = (sourceWidth * this.size) * (0.5 * (this.size - 1));
+            this.canvasCtx.drawImage(this.image,
+                sourceX, 0,
+                sourceWidth * this.size, sourceHeight,
+                this.xPos, this.yPos,
+                this.typeConfig.width * this.size, this.typeConfig.height);
+        },
+        /**
+         * Obstacle frame update.
+         * @param {number} deltaTime
+         * @param {number} speed
+         */
+        update: function(deltaTime, speed) {
+            if (!this.remove) {
+                this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
+                this.draw();
+                if (!this.isVisible()) {
+                    this.remove = true;
+                }
+            }
+        },
+        /**
+         * Calculate a random gap size.
+         * - Minimum gap gets wider as speed increses
+         * @param {number} gapCoefficient
+         * @param {number} speed
+         * @return {number} The gap size.
+         */
+        getGap: function(gapCoefficient, speed) {
+            var minGap = Math.round(this.width * speed +
+                this.typeConfig.minGap * gapCoefficient);
+            var maxGap = Math.round(minGap * Candy.MAX_GAP_COEFFICIENT);
+            return getRandomNum(minGap, maxGap);
+        },
+
+        /**
+         * Check if candy is visible.
+         * @return {boolean} Whether the candy is in the game area.
+         */
+        isVisible: function() {
+            return this.xPos + this.width > 0;
+        },
+        /**
+         * Make a copy of the collision boxes, since these will change based on
+         * obstacle type and size.
+         */
+        cloneCollisionBoxes: function() {
+            var collisionBoxes = this.typeConfig.collisionBoxes;
+            for (var i = collisionBoxes.length - 1; i >= 0; i--) {
+                this.collisionBoxes[i] = new CollisionBox(collisionBoxes[i].x,
+                    collisionBoxes[i].y, collisionBoxes[i].width,
+                    collisionBoxes[i].height);
+            }
+        }
+    };
     /**
      * Obstacle definitions.
      * minGap: minimum pixel space betweeen obstacles.
@@ -1325,6 +1485,21 @@
             new CollisionBox(13, 10, 10, 38)
         ]
     }];
+	
+	Candy.types = [{
+        type: 'CANDY',
+        className: ' candy ',
+        width: 17,
+        height: 85,
+        yPos: 255,
+        multipleSpeed: 3,
+        minGap: 120,
+        collisionBoxes: [
+            new CollisionBox(0, 15, 5, 27),
+            new CollisionBox(6, 0, 6, 34),
+            new CollisionBox(15, 15, 7, 14)
+        ]
+    }, ];
     //******************************************************************************
     /**
      * T-rex game character.
@@ -1582,6 +1757,8 @@
                 this.jumpVelocity = this.config.DROP_VELOCITY;
             }
         },
+		
+
         /**
          * Update frame for a jump.
          * @param {number} deltaTime
@@ -1632,6 +1809,9 @@
             this.midair = false;
             this.speedDrop = false;
             this.jumpCount = 0;
+			
+			Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+            Runner.config.ACCELERATION = 0.001;
         }
     };
     //******************************************************************************
@@ -2078,6 +2258,10 @@
             CACTUS_SMALL: images.CACTUS_SMALL,
             CACTUS_LARGE: images.CACTUS_LARGE
         };
+		this.candyImgs = {
+            //  CANDY: images.CANDY
+            CANDY: images.CLOUD
+        };
         this.init();
     };
 
@@ -2097,7 +2281,7 @@
          * Initialise the horizon. Just add the line and a cloud. No obstacles.
          */
         init: function() {
-            this.addCloud();
+            //this.addCloud();
             this.horizonLine = new HorizonLine(this.canvas, this.horizonImg);
         },
 
