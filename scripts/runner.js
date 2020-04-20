@@ -1,6 +1,7 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 (function () {
     'use strict';
     /**
@@ -298,9 +299,9 @@
          * Game initialiser.
          */
         init: function () {
-            // Hide the static icon.
+            /* Hide the static icon.
             document.querySelector('.' + Runner.classes.ICON).style.visibility =
-                'hidden';
+                'hidden';*/
             this.adjustDimensions();
             this.setSpeed();
             this.containerEl = document.createElement('div');
@@ -354,7 +355,9 @@
         adjustDimensions: function () {
             clearInterval(this.resizeTimerId_);
             this.resizeTimerId_ = null;
-            var boxStyles = window.getComputedStyle(this.outerContainerEl);
+           
+            var boxStyles = window.getComputedStyle(this.outerContainerEl, "");
+   
             var padding = Number(boxStyles.paddingLeft.substr(0,
                 boxStyles.paddingLeft.length - 2));
 
