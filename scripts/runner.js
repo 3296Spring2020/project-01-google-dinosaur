@@ -20,6 +20,17 @@
         this.containerEl = null;
         this.config = opt_config || Runner.config;
 
+		var difficulty = localStorage["difficulty"];
+		
+		if(difficulty =='medium'){
+			this.config.ACCELERATION = 0.2;
+			this.config.MAX_SPEED = 25;
+		}else if(difficulty =='carzy'){
+			this.config.ACCELERATION = 0.5;
+			this.config.MAX_SPEED = 40;
+		}
+
+
         this.dimensions = Runner.defaultDimensions;
         this.canvas = null;
         this.canvasCtx = null;
