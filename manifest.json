@@ -3,15 +3,47 @@
   "version": "1.0",
   "description": " modified game",
   "manifest_version": 2,
-  "content_scripts":[
-      {
-          "matches":["<all_urls>"],
-          "js": ["content.js"]
-      }
+
+  /*"background": {
+    "persistent": true,
+    "scripts": [
+
+     
+      "playerNum.js",
+      "runner.js",
+      "selector.js",
+      "twoRunner.js"
+
+
+    ]
+  },*/
+
+  "permissions": [
+    "contextMenus",
+    "activeTab"
   ],
-  "browser_action":{
-      "default_popup":"popup.html",
-      "default_title":"Game"
-      
-  }
+
+  "web_accessible_resources": [
+
+
+    "gaming.html",
+    "jquery.js",
+    "playerNum.js",
+    "runner.js",
+    "selector.js",
+    "twoRunner.js"
+
+
+  ],
+
+  "browser_action": {
+
+
+
+    "default_popup": "index.html",
+
+    "default_title": "game"
+  },
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+
 }
