@@ -1,0 +1,49 @@
+{
+  "name": "Google Dinosaur Game Modified Version",
+  "version": "1.0",
+  "description": " modified game",
+  "manifest_version": 2,
+
+  /*"background": {
+    "persistent": true,
+    "scripts": [
+
+     
+      "playerNum.js",
+      "runner.js",
+      "selector.js",
+      "twoRunner.js"
+
+
+    ]
+  },*/
+
+  "permissions": [
+    "contextMenus",
+    "activeTab"
+  ],
+
+  "web_accessible_resources": [
+
+
+    "gaming.html",
+    "jquery.js",
+    "playerNum.js",
+    "runner.js",
+    "selector.js",
+    "twoRunner.js"
+
+
+  ],
+
+  "browser_action": {
+
+
+
+    "default_popup": "index.html",
+
+    "default_title": "game"
+  },
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+
+}
