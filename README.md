@@ -2,7 +2,7 @@
 
 The trex runner game abstracted from chrome offline err page.
 
-![chrome offline game cast](img/chrome_offline_game.gif)
+![chrome offline game cast](main-project/img/chrome_offline_game.gif)
 
 ## A Vision Statement
 
