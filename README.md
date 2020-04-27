@@ -2,7 +2,7 @@
 
 The trex runner game abstracted from chrome offline err page.
 
-![chrome offline game cast](img/chrome_offline_game.gif)
+![chrome offline game cast](main-project/img/chrome_offline_game.gif)
 
 ## A Vision Statement
 
@@ -128,6 +128,12 @@ Add jquery for both html file.
 
 - One Player model and Two Player model can choose their own actor for playing.
 - Display the magic candy.
-- Display the difficulty of level.
 - Extension structure is done.
+
+## Week 4
+
+- Display the difficulty of level.
+- When Trex eats the candy, the candy will disappear instead of going through the body of the dinosaur.
+- Display the night mode for version 1 player.
+- Extension structure is a final version.
 
