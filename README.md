@@ -144,8 +144,8 @@ Version1: Game Only
  Open main-project folder and open index.html to start the game
 
 VerSion2: Web Server With Sign In Option 
- Step 1: Open usbwebserver or install PHP operating environment and phpAdmin
- Step 2: Start Apache and MySQL
- Step 3: goto localhost/phpAdmin to creat a database which name "user", then creat a table which name player and have element userName and password.
- Step 4:put file into usbwebserver\root
+-  Step 1: Open usbwebserver or install PHP operating environment and phpAdmin
+-  Step 2: Start Apache and MySQL
+-  Step 3: goto localhost/phpAdmin to creat a database which name "user", then creat a table which name player and have element userName and password.
+- Step 4:put file into usbwebserver\root
  Step 5: Go to localhost/project-01-google-dinosaur-master and start using the serve.
