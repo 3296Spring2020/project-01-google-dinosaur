@@ -11,7 +11,7 @@ include "./inc/sql.php"
 if(isset($_COOKIE['name'])){
 
 	echo "<h3 style='text-align:center;'>Welcome ".$_COOKIE['name']."!!</h3><br/>";
-	echo "<h3 style='text-align:center;color:red;'><a href='project-01-google-dinosaur-master' >Please Enjoy the game!!!</a></h3>";
+	echo "<h3 style='text-align:center;color:red;'><a href='./main-project' >Please Enjoy the game!!!</a></h3>";
 	echo "<hr/><h4 style='text-align:center;'><a href='./user/logout.php' style='text-align:center;'>Log Out</a></h4>";
 }else{
 	echo "<h3 style='text-align:center;'><a href='./user/login.php' style='text-align:center;'>Ple LogIn</a></h3>";
