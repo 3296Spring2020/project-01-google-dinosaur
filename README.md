@@ -6,17 +6,17 @@ The trex runner game abstracted from chrome offline err page.
 
 ## A Vision Statement
 
-<strong>FOR</strong>: everyone is able to get online and offline 
+<strong>FOR</strong>: everyone is able to get offline .
 
 <strong>WHO</strong>: need to have something to do when the connection is down.
 
 The <strong>Google Dinosaur</strong> is a <strong>Browser Extension</strong>
 
-<strong>THAT</strong> allows users to change the level of difficulty and allows users to attack barriers in the game based on the original game
+<strong>THAT</strong> allows users to change the level of difficulty and allows the dinosaur to fky, jump or eat candy in the game based on the original game.
 
-<strong>UNLIKE</strong> this extension is able to play while the Internet connection is perfect and will display how many times and the highest score for a day.
+<strong>UNLIKE</strong> this extension is able to display your name and the top 5 highest score at the end of the game.
 
-Players can <strong>CHANGE</strong> character model or music to to better suit their mood.
+Players can <strong>CHANGE</strong> character model or the background theme.
 
 <strong>OUR PRODUCT</strong> will provide a new trend and design pattern for users to play more attractive.
 
@@ -148,4 +148,4 @@ VerSion2: Web Server With Sign In Option
 -  Step 2: Start Apache and MySQL
 -  Step 3: goto localhost/phpAdmin to creat a database which name "user", then creat a table which name player and have element userName and password.
 - Step 4:put file into usbwebserver\root
- Step 5: Go to localhost/project-01-google-dinosaur-master and start using the serve.
+- Step 5: Go to localhost/main-project and start using the server.
